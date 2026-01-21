@@ -1,0 +1,77 @@
+<p-dialog
+  header="Update Teacher"
+  [(visible)]="visible"
+  [modal]="true"
+  [closable]="true"
+  [style]="{ width: '420px' }"
+  (onHide)="onClose()"
+>
+  <div class="p-fluid add-form" *ngIf="teacher">
+
+
+    <div class="p-field">
+      <label for="id">Id</label>
+      <input
+        pInputText
+        id="id"
+        [(ngModel)]="teacher.id"
+      />
+    </div>
+
+    <div class="p-field">
+      <label for="name">Name</label>
+      <input
+        pInputText
+        id="name"
+        [(ngModel)]="teacher.name"
+      />
+    </div>
+
+    <div class="p-field">
+      <label for="age">Age</label>
+      <input
+        pInputText
+        id="age"
+        type="number"
+        [(ngModel)]="teacher.age"
+      />
+    </div>
+
+    <div class="p-field">
+      <label for="email">Email</label>
+      <input
+        pInputText
+        id="email"
+        [(ngModel)]="teacher.email"
+      />
+    </div>
+
+    <div class="p-field">
+      <label for="subject">Subject</label>
+      <input
+        pInputText
+        id="subject"
+        [(ngModel)]="teacher.subject"
+      />
+    </div>
+
+    <div class="buttons">
+      <button
+        pButton
+        type="button"
+        label="Cancel"
+        class="p-button-outlined"
+        (click)="onClose()"
+      ></button>
+
+      <button
+        pButton
+        type="button"
+        label="Update"
+        class="p-button-primary"
+        (click)="save()"
+      ></button>
+    </div>
+
+  </div>
+</p-dialog>

@@ -1,0 +1,87 @@
+<p-dialog
+  header="Update Student"
+  [visible]="visible()"
+  (visibleChange)="visible.set($event)"
+  [modal]="true"
+  [closable]="true"
+  [style]="{ width: '420px' }"
+  (onHide)="cancel()"
+>
+  <div class="p-fluid add-form" *ngIf="student">
+
+    <div class="p-field">
+      <label for="id">Id</label>
+      <input
+        pInputText
+        id="id"
+        type="number"
+        [(ngModel)]="student.id"
+      />
+    </div>
+
+    <div class="p-field">
+      <label for="name">Name</label>
+      <input
+        pInputText
+        id="name"
+        [(ngModel)]="student.name"
+      />
+    </div>
+
+    <div class="p-field">
+      <label for="email">Email</label>
+      <input
+        pInputText
+        id="email"
+        [(ngModel)]="student.email"
+      />
+    </div>
+
+    <div class="p-field">
+      <label for="grade">Grade</label>
+      <input
+        pInputText
+        id="grade"
+        type="text"
+        [(ngModel)]="student.grade"
+      />
+    </div>
+
+    <div class="p-field">
+      <label for="course">Course</label>
+      <input
+        pInputText
+        id="course"
+        [(ngModel)]="student.course"
+      />
+    </div>
+
+    <div class="p-field">
+      <label for="status">Status</label>
+      <input
+        pInputText
+        id="status"
+        [(ngModel)]="student.status"
+      />
+    </div>
+
+    <div class="buttons">
+      <button
+        pButton
+        type="button"
+        label="Cancel"
+        class="p-button-outlined"
+        (click)="cancel()"
+      ></button>
+
+      <button
+        pButton
+        type="button"
+        label="Update"
+        class="p-button-primary"
+        (click)="save()"
+      ></button>
+    </div>
+
+  </div>
+</p-dialog>

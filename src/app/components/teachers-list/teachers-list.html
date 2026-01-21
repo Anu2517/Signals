@@ -1,0 +1,167 @@
+<div class="card">
+  <div class="header-section">
+    <h2>{{ title }}</h2>
+
+    <button
+      pButton
+      icon="pi pi-download"
+      label="Export CSV"
+      class="p-button-success"
+      (click)="exportCSV()">
+    </button>
+
+    <button
+      pButton
+      icon="pi pi-download"
+      label="Export JSON"
+      class="p-button-help"
+      (click)="exportJSON()">
+    </button>
+
+    <button 
+      pButton
+      type="button"
+      icon="pi pi-plus"
+      label="Add Teacher"
+      class="p-button-outlined p-button-primary"
+      (click)="addCmp.show()"
+    ></button>
+  </div>
+
+
+  <div class="card flex justify-center">
+    <p-toast [breakpoints]="{ '920px': { width: '100%', right: '0', left: '0' } }" />
+  </div>
+
+    <p-table
+        #dt
+        [value]="teachers()"
+        [(selection)]="selectedTeachers"
+        [globalFilterFields]="['id', 'name', 'age', 'email', 'subject', 'status']"
+        dataKey="id"
+        [(selection)]="selectedTeachers"
+        selectionMode="multiple"
+        [paginator]="true"
+        [rows]="5"
+        [rowsPerPageOptions]="[5,10,15]"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        paginatorTemplate="
+          CurrentPageReport
+          PageLinks
+          RowsPerPageDropdown
+        "
+    >
+        <ng-template #caption>
+            <div class="p-inputgroup">
+                <p-iconfield iconPosition="left">
+                  <p-inputicon>
+                    <i class="pi pi-search"></i>
+                  </p-inputicon>
+                  <input
+                  class="global-search-input"
+                    pInputText
+                    type="text"
+                    [(ngModel)]="globalFilter"
+                    (input)="dt.filterGlobal($event.target.value, 'contains')"
+                    placeholder="Global Search"
+                  />
+                </p-iconfield>
+
+                <p-select
+                  [options]="statusOptions"
+                  [(ngModel)]="selectedStatus"
+                  optionLabel="label"
+                  optionValue="value"
+                  placeholder="All Status"
+                  (onChange)="dt.filter($event.value, 'status', 'equals')"
+                  styleClass="w-12rem">
+                </p-select>
+
+                <p-select
+                  [options]="departmentOptions"
+                  [(ngModel)]="selectedDepartment"
+                  optionLabel="label"
+                  optionValue="value"
+                  placeholder="All Departments"
+                  (onChange)="dt.filter($event.value, 'department', 'equals')"
+                  styleClass="w-12rem">
+              </p-select>
+            </div>
+
+            <div class="selection-bar"
+             *ngIf="selectedTeachers.length > 0"
+            >
+              <span>{{ selectedTeachers.length }} teacher(s) selected</span>
+      
+              <button 
+                pButton
+                label="Delete Selected"
+                icon="pi pi-trash"
+                class="p-button-danger"
+                (click)="deleteSelected()">
+              </button>
+            </div>
+        </ng-template>
+
+        <ng-template #header>
+          <tr>
+            <th style="width: 3rem"><p-tableHeaderCheckbox></p-tableHeaderCheckbox></th>
+            <th pSortableColumn="id" style="min-width: 80px">ID <p-sortIcon field="id"></p-sortIcon></th>
+            <th pSortableColumn="name" style="min-width: 150px">Name <p-sortIcon field="name"></p-sortIcon></th>
+            <th pSortableColumn="email" style="min-width: 100px">Age <p-sortIcon field="email"></p-sortIcon></th>
+            <th pSortableColumn="age" style="min-width: 150px">Email <p-sortIcon field="age"></p-sortIcon></th>
+            <th pSortableColumn="subject" style="min-width: 150px">Subject <p-sortIcon field="subject"></p-sortIcon></th>
+            <th pSortableColumn="department" style="min-width: 150px">Department <p-sortIcon field="department"></p-sortIcon></th>
+            <th pSortableColumn="status" style="min-width: 120px">Status <p-sortIcon field="status"></p-sortIcon></th>
+            <th style="min-width: 150px">Actions</th>
+          </tr>
+        </ng-template>
+
+        <ng-template #body let-teacher>
+            <tr [pSelectableRow]="teacher">
+                <td><p-tableCheckbox [value]="teacher"></p-tableCheckbox></td>
+                <td>{{ teacher.id }}</td>
+                <td>{{ teacher.name }}</td>
+                <td>{{ teacher.age }}</td>
+                <td>{{ teacher.email }}</td>
+                <td>{{ teacher.subject }}</td>
+                <td>{{ teacher.department }}</td>
+                <td>
+                   <p-tag [value]="teacher.status" [severity]="getSeverity(teacher.status)" />
+                </td>
+
+                <td class="actions-column">
+                    <button
+                       pButton
+                       icon="pi pi-pencil"
+                       class="p-button-text p-button-success"
+                       (click)="onEditStart(teacher)"
+                    ></button>
+
+                    <button
+                       pButton
+                       icon="pi pi-trash"
+                       class="p-button-text p-button-danger"
+                       (click)="onDelete(teacher)"
+                    ></button>
+                </td>
+            </tr>
+        </ng-template>
+
+        <ng-template emptymessage>
+            <tr>
+                <td colspan="6">No teachers found.</td>
+            </tr>
+        </ng-template>     
+    </p-table>
+
+    <app-add-teachers #addCmp></app-add-teachers>
+
+    <app-update-teachers
+    [visible]="displayEditDialog()"
+    [teacherId]="selectedTeacherId()"
+    [onClose]="onDialogCancel.bind(this)"
+  ></app-update-teachers>
+
+</div>

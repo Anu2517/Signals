@@ -1,0 +1,33 @@
+<p-dialog header="Add teacher" [(visible)]="display" [modal]="true" [style]="{width: '420px'}" [baseZIndex]="10000">
+  <div class="p-fluid add-form">
+    <div class="p-field">
+      <label for="id">Id</label>
+      <input pInputText id="id" type="number" [(ngModel)]="teacher.id" />
+    </div>
+
+    <div class="p-field">
+      <label for="name">Name</label>
+      <input pInputText id="name" [(ngModel)]="teacher.name" />
+    </div>
+
+    <div class="p-field">
+      <label for="age">Age</label>
+      <input pInputText id="age" type="number" [(ngModel)]="teacher.age" />
+    </div> 
+
+    <div class="p-field">
+      <label for="email">Email</label>
+      <input pInputText id="email" [(ngModel)]="teacher.email" />
+    </div>
+
+    <div class="p-field">
+      <label for="subject">Subject</label>
+      <input pInputText id="subject" [(ngModel)]="teacher.subject" />
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <button pButton type="button" label="Cancel" class="p-button-outlined" (click)="cancel()"></button>
+    <button pButton type="button" label="Add" class="p-button-primary" (click)="add()"></button>
+  </ng-template>
+</p-dialog>

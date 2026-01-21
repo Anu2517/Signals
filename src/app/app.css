@@ -1,0 +1,133 @@
+.app-container {
+  display: flex;
+  height: 100vh;
+  background: #f8fafc;
+}
+
+.sidebar {
+  width: 260px;
+  background: #ffffff;
+  border-right: 1px solid #e5e7eb;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.logo {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+  color: #1f2937;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.menu a {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #374151;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.menu a:hover {
+  background: #f1f5f9;
+}
+
+.menu a.active {
+  background: #e0e7ff;
+  color: #1d4ed8;
+}
+
+.theme-toggle {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  color: #374151;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.theme-toggle:hover {
+  background: #f1f5f9;
+  padding: 0.6rem;
+  border-radius: 8px;
+}
+
+.main-content {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+  background: #f8fafc;
+  transition: all 0.3s ease;
+}
+
+/* Dark Theme Styles */
+:host-context(body.dark-theme) .app-container {
+  background: #1f2937;
+}
+
+:host-context(body.dark-theme) .sidebar {
+  background: #111827;
+  border-right-color: #374151;
+}
+
+:host-context(body.dark-theme) .logo {
+  color: #f3f4f6;
+}
+
+:host-context(body.dark-theme) .menu a {
+  color: #d1d5db;
+}
+
+:host-context(body.dark-theme) .menu a:hover {
+  background: #374151;
+}
+
+:host-context(body.dark-theme) .menu a.active {
+  background: #1e3a8a;
+  color: #93c5fd;
+}
+
+:host-context(body.dark-theme) .theme-toggle {
+  color: #d1d5db;
+  border-top-color: #374151;
+}
+
+:host-context(body.dark-theme) .theme-toggle:hover {
+  background: #374151;
+}
+
+:host-context(body.dark-theme) .main-content {
+  background: #1f2937;
+}
+
+:host-context(body.dark-theme) .main-content h2 {
+  color: #f3f4f6;
+}
+
+:host-context(body.dark-theme) .card {
+  background: #1f2937;
+  border-color: #374151;
+  color: #d1d5db;
+}
+
+:host-context(body.dark-theme) .card h2 {
+  color: #f3f4f6;
+}
+
+:host-context(body.dark-theme) p {
+  color: #d1d5db;
+}

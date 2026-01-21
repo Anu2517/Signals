@@ -1,0 +1,23 @@
+.add-form .p-field {
+    margin-bottom: 0.75rem;
+}
+
+.add-form label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.p-dialog .p-button {
+    min-width: 6rem;
+}
+
+.p-dialog .p-button-primary {
+    background-color: #1976d2;
+    border-color: #1976d2;
+}
+
+.buttons {
+    display: flex;
+    gap: 1rem;
+}

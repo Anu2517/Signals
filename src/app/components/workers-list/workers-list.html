@@ -1,0 +1,161 @@
+<div class="card">
+  <div class="header-section">
+    <h2>{{ title }}</h2>
+
+    <button
+      pButton
+      icon="pi pi-download"
+      label="Export CSV"
+      class="p-button-success"
+      (click)="exportCSV()">
+    </button>
+
+    <button
+      pButton
+      icon="pi pi-download"
+      label="Export JSON"
+      class="p-button-help"
+      (click)="exportJSON()">
+    </button>
+
+    <button
+      pButton
+      type="button"
+      icon="pi pi-plus"
+      label="Add Worker"
+      class="p-button-outlined p-button-primary"
+      (click)="addCmp.show()"
+    ></button>
+  </div>
+
+  <div class="card flex justify-center">
+    <p-toast [breakpoints]="{ '920px': { width: '100%', right: '0', left: '0' } }" />
+  </div>
+
+  <p-table
+    #dt
+    [value]="workers()"
+    dataKey="id"
+    [(selection)]="selectedWorkers"
+    selectionMode="multiple"
+    [globalFilterFields]="['id','name','email','department','experience']"
+    [paginator]="true"
+    [rows]="5"
+    [rowsPerPageOptions]="[5,10,15]"
+    [showCurrentPageReport]="true"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    paginatorTemplate="
+      CurrentPageReport
+      PageLinks
+      RowsPerPageDropdown
+    "
+  >
+ 
+    <ng-template pTemplate="caption">
+      <div class="p-inputgroup">
+        <p-iconfield iconPosition="left">
+            <p-inputicon>
+                <i class="pi pi-search"></i>
+            </p-inputicon>
+            <input
+            class="global-search-input"
+                pInputText
+                type="text"
+                [(ngModel)]="globalFilter"
+                (input)="dt.filterGlobal($event.target.value, 'contains')"
+                placeholder="Search Workers..."
+            />
+        </p-iconfield>
+
+        <p-select
+          [options]="statusOptions"
+          [(ngModel)]="selectedStatus"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="All Status"
+          (onChange)="dt.filter($event.value, 'status', 'equals')"
+          styleClass="w-12rem">
+        </p-select>
+
+        <p-select
+          [options]="departmentOptions"
+          [(ngModel)]="selectedDepartment"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="All Departments"
+          (onChange)="dt.filter($event.value, 'department', 'equals')"
+          styleClass="w-12rem">
+        </p-select>
+      </div>
+
+      <div class="selection-bar"
+        *ngIf="selectedWorkers.length > 0"
+      >
+        <span>{{ selectedWorkers.length }} worker(s) selected</span>
+
+        <button 
+          pButton
+          label="Delete Selected"
+          icon="pi pi-trash"
+          class="p-button-danger"
+          (click)="deleteSelected()">
+        </button>
+      </div>
+    </ng-template>
+
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="width: 3rem"><p-tableHeaderCheckbox></p-tableHeaderCheckbox></th>
+        <th pSortableColumn="id" style="min-width: 100px">ID <p-sortIcon field="id"></p-sortIcon></th>
+        <th pSortableColumn="name" style="min-width: 150px">Name <p-sortIcon field="name"></p-sortIcon></th>
+        <th pSortableColumn="email" style="min-width: 150px">Email <p-sortIcon field="email"></p-sortIcon></th>
+        <th pSortableColumn="department" style="min-width: 150px">Department <p-sortIcon field="department"></p-sortIcon></th>
+        <th pSortableColumn="experience" style="min-width: 150px">Experience <p-sortIcon field="experience"></p-sortIcon></th>
+        <th pSortableColumn="status" style="min-width: 120px">Status <p-sortIcon field="status"></p-sortIcon></th>
+        <th style="min-width: 150px">Actions</th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-worker>
+      <tr class="worker-row">
+        <td><p-tableCheckbox [value]="worker"></p-tableCheckbox></td>
+        <td>{{ worker.id }}</td>
+        <td>{{ worker.name }}</td>
+        <td>{{ worker.email }}</td>
+        <td>{{ worker.department }}</td>
+        <td>{{ worker.experience }}</td>
+        <td>
+          <p-tag [value]="worker.status" [severity]="getSeverity(worker.status)" />
+        </td>
+
+        <td class="actions-column">
+          <button
+            pButton
+            icon="pi pi-pencil"
+            class="p-button-text p-button-success"
+            (click)="editWorker(worker)"
+          ></button>
+
+          <button
+            pButton
+            icon="pi pi-trash"
+            class="p-button-text p-button-danger"
+            (click)="onDelete(worker)"
+          ></button>
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="8">No workers found.</td>
+      </tr>
+    </ng-template>
+
+  </p-table>
+
+  <app-add-workers #addCmp></app-add-workers>
+
+  <app-update-workers></app-update-workers>
+
+</div>

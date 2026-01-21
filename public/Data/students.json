@@ -1,0 +1,222 @@
+[
+  {
+    "id": 1,
+    "name": "Anusha",
+    "age": 20,
+    "email": "anusha@example.com",
+    "subject": "Computer Science",
+    "department": "Technology",
+    "status": "Active",
+    "grade": "12th",
+    "enrollmentDate": "2024-05-10"
+  },
+  {
+    "id": 2,
+    "name": "Ravi",
+    "age": 22,
+    "email": "ravi@example.com",
+    "subject": "Mathematics",
+    "department": "Science",
+    "status": "Graduated",
+    "grade": "11th",
+    "enrollmentDate": "2021-04-05"
+  },
+  {
+    "id": 3,
+    "name": "Priya",
+    "age": 21,
+    "email": "priya@example.com",
+    "subject": "Physics",
+    "department": "Science",
+    "status": "Active",
+    "grade": "9th",
+    "enrollmentDate": "2025-06-12"
+  },
+  {
+    "id": 4,
+    "name": "Karan",
+    "age": 23,
+    "email": "karan@example.com",
+    "subject": "Chemistry",
+    "department": "Science",
+    "status": "Inactive",
+    "grade": "10th",
+    "enrollmentDate": "2022-01-18"
+  },
+  {
+    "id": 5,
+    "name": "Sneha",
+    "age": 20,
+    "email": "sneha@example.com",
+    "subject": "Biology",
+    "department": "Science",
+    "status": "Active",
+    "grade": "12th",
+    "enrollmentDate": "2024-02-15"
+  },
+  {
+    "id": 6,
+    "name": "Arjun",
+    "age": 24,
+    "email": "arjun@example.com",
+    "subject": "English",
+    "department": "Arts",
+    "status": "Active",
+    "grade": "11th",
+    "enrollmentDate": "2021-03-08"
+  },
+  {
+    "id": 7,
+    "name": "Meera",
+    "age": 22,
+    "email": "meera@example.com",
+    "subject": "History",
+    "department": "Arts",
+    "status": "Inactive",
+    "grade": "10th",
+    "enrollmentDate": "2022-06-20"
+  },
+  {
+    "id": 8,
+    "name": "Vikram",
+    "age": 21,
+    "email": "vikram@example.com",
+    "subject": "Economics",
+    "department": "Commerce",
+    "status": "Active",
+    "grade": "12th",
+    "enrollmentDate": "2025-06-17"
+  },
+  {
+    "id": 9,
+    "name": "Neha",
+    "age": 23,
+    "email": "neha@example.com",
+    "subject": "Geography",
+    "department": "Arts",
+    "status": "Graduated",
+    "grade": "11th",
+    "enrollmentDate": "2024-05-12"
+  },
+  {
+    "id": 10,
+    "name": "Rahul",
+    "age": 22,
+    "email": "rahul@example.com",
+    "subject": "Political Science",
+    "department": "Arts",
+    "status": "Active",
+    "grade": "12th",
+    "enrollmentDate": "2025-06-19"
+  },
+  {
+    "id": 11,
+    "name": "Pooja",
+    "age": 21,
+    "email": "pooja@example.com",
+    "subject": "Chemistry",
+    "department": "Science",
+    "status": "Inactive",
+    "grade": "10th",
+    "enrollmentDate": "2025-06-22"
+  },
+  {
+    "id": 12,
+    "name": "Suresh",
+    "age": 24,
+    "email": "suresh@example.com",
+    "subject": "Mathematics",
+    "department": "Science",
+    "status": "Graduated",
+    "grade": "11th",
+    "enrollmentDate": "2021-04-15"
+  },
+  {
+    "id": 13,
+    "name": "Kavya",
+    "age": 20,
+    "email": "kavya@example.com",
+    "subject": "Computer Science",
+    "department": "Technology",
+    "status": "Active",
+    "grade": "12th",
+    "enrollmentDate": "2024-06-21"
+  },
+  {
+    "id": 14,
+    "name": "Amit",
+    "age": 23,
+    "email": "amit@example.com",
+    "subject": "Physics",
+    "department": "Science",
+    "status": "Inactive",
+    "grade": "10th",
+    "enrollmentDate": "2022-06-25"
+  },
+  {
+    "id": 15,
+    "name": "Rohit",
+    "age": 21,
+    "email": "rohit@example.com",
+    "subject": "Biology",
+    "department": "Science",
+    "status": "Active",
+    "grade": "12th",
+    "enrollmentDate": "2025-07-10"
+  },
+  {
+    "id": 16,
+    "name": "Swathi",
+    "age": 19,
+    "email": "swathi@example.com",
+    "subject": "English",
+    "department": "Arts",
+    "status": "Active",
+    "grade": "11th",
+    "enrollmentDate": "2023-03-18"
+  },
+  {
+    "id": 17,
+    "name": "Manoj",
+    "age": 22,
+    "email": "manoj@example.com",
+    "subject": "History",
+    "department": "Arts",
+    "status": "Inactive",
+    "grade": "10th",
+    "enrollmentDate": "2022-02-14"
+  },
+  {
+    "id": 18,
+    "name": "Divya",
+    "age": 20,
+    "email": "divya@example.com",
+    "subject": "Geography",
+    "department": "Arts",
+    "status": "Active",
+    "grade": "12th",
+    "enrollmentDate": "2023-01-09"
+  },
+  {
+    "id": 19,
+    "name": "Karthik",
+    "age": 23,
+    "email": "karthik@example.com",
+    "subject": "Economics",
+    "department": "Commerce",
+    "status": "Active",
+    "grade": "11th",
+    "enrollmentDate": "2021-08-22"
+  },
+  {
+    "id": 20,
+    "name": "Ayesha",
+    "age": 21,
+    "email": "ayesha@example.com",
+    "subject": "Political Science",
+    "department": "Arts",
+    "status": "Active",
+    "grade": "12th",
+    "enrollmentDate": "2023-04-30"
+  }
+]
