@@ -1,15 +1,16 @@
 .header-section {
   display: flex;
   gap: 1rem;
-  /* justify-content: space-between; */
   margin-bottom: 1rem;
 }
 
 .header-section h2 {
+  margin-top: 0;
   flex: 1;
 }
 
 .header-section button {
+  color: white;
   border-radius: 6px;
   padding: 0 1rem;
   font-size: 0.85rem;
@@ -18,8 +19,6 @@
 
 .p-inputgroup {
   display: flex;
-  /* justify-content: space-between; */
-  /* align-items: center; */
   gap: 1rem; 
 }
 
@@ -40,10 +39,12 @@
 }
 
 .global-search-input {
-    width: 550px;
+    /* background-color: #1f2937; */
+    width: 700px;
 }
 
 .selection-bar {
+  grid-area: 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -66,3 +67,7 @@
 .p-button-primary:hover {
   background-color: #2a53c4;
 }
+
+
+
+

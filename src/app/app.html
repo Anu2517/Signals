@@ -24,17 +24,14 @@
       </a>
     </nav>
 
-    <div class="theme-toggle" (click)="toggleTheme()">
+   <div class="theme-toggle" (click)="toggleTheme()">
       <i class="pi" [class.pi-moon]="!isDark" [class.pi-sun]="isDark"></i>
       <span>{{ isDark ? 'Light Mode' : 'Dark Mode' }}</span>
     </div>
-
-    <!-- <p-button label="Toggle Dark Mode" (onClick)="toggleDarkMode()"/>
-    <p-button label="Toggle Light Mode" (onClick)="toggleLightMode()"/> -->
-
+    
   </aside>
-
   <main class="main-content">
-    <router-outlet />
+    <router-outlet></router-outlet>
+
   </main>
 </div>

@@ -6,7 +6,7 @@
 .add-form {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    background: #fff;
+    /* background: #fff; */
     padding: 0.5rem;
 }
 
@@ -105,9 +105,9 @@ button {
 }
 
 .btn-cancel {
-    background-color: white;
+    /* background-color: white; */
 }
 
 .btn-cancel:hover {
-    background-color: #f5f6f8;
+    /* background-color: #f5f6f8; */
 }

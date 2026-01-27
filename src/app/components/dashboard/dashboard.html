@@ -1,141 +1,110 @@
-<div class="dasboard-container">
+<div class="dashboard-container">
     <h2 class="header">Dashboard</h2>
     <p class="subtitle">Overview of School Management System</p>
 
+    <!-- cards -->
     <div class="stat-cards">
         <div class="stat-card">
             <div class="card-header">
-                <div class="icon blue">
-                    <i class="pi pi-graduation-cap"></i>
-                </div>
+                <div class="icon blue"><i class="pi pi-graduation-cap"></i></div>
+                <div class="trend" [class.up]="studentGrowthPercent() > 0" [class.down]="studentGrowthPercent() < 0">
 
-                <div class="trend up">
-                    <i class="pi pi-arrow-up-right"></i>
+                    <i class="pi" *ngIf="studentGrowthPercent() !== 0"
+                        [ngClass]="studentGrowthPercent() > 0 ? 'pi-arrow-up' : 'pi-arrow-down'">
+                    </i>
+
                     <span>{{ studentGrowthPercent() }}%</span>
                 </div>
+
             </div>
             <h2>{{ totalStudents() }}</h2>
             <p>Total Students</p>
-            <small>
-                {{ activeStudents() }} active,
-                {{ inactiveStudents() }} inactive,
-                {{ graduatedStudents() }} graduated
-            </small>
+            <small>{{ activeStudents() }} active, {{ inactiveStudents() }} inactive</small>
         </div>
 
         <div class="stat-card">
             <div class="card-header">
-                <div class="icon green">
-                    <i class="pi pi-users"></i>
-                </div>
+                <div class="icon green"><i class="pi pi-users"></i></div>
+                <div class="trend" 
+                    [class.up]="teacherSharePercent() > 0" 
+                    [class.down]="teacherSharePercent() < 0">
 
-                <div class="trend up">
-                    <i class="pi pi-arrow-up-right"></i>
+                    <i class="pi pi-arrow-up"></i>
                     <span>{{ teacherSharePercent() }}%</span>
                 </div>
             </div>
-
             <h2>{{ totalTeachers() }}</h2>
             <p>Total Teachers</p>
-            <small>
-                across {{ totalDepartments() }} departments
-            </small>
+            <small>Across {{ totalDepartments() }} departments</small>
         </div>
 
         <div class="stat-card">
             <div class="card-header">
-                <div class="icon purple">
-                    <i class="pi pi-briefcase"></i>
-                </div>
+                <div class="icon purple"><i class="pi pi-briefcase"></i></div>
+                <div class="trend" 
+                    [class.up]="workerSharePercent() > 0" 
+                    [class.down]="workerSharePercent() < 0">
 
-                <div class="trend up">
-                    <i class="pi pi-arrow-up-right"></i>
+                    <i class="pi pi-arrow-up"></i>
                     <span>{{ workerSharePercent() }}%</span>
                 </div>
             </div>
-
             <h2>{{ totalWorkers() }}</h2>
             <p>Total Workers</p>
-            <small>
-                Support staff members
-            </small>
+            <small>Support staff members</small>
         </div>
 
         <div class="stat-card">
             <div class="card-header">
-                <div class="icon orange">
-                    <i class="pi pi-calendar"></i>
-                </div>
+                <div class="icon orange"><i class="pi pi-calendar"></i></div>
             </div>
-
             <h2>2025-2026</h2>
             <p>Academic Year</p>
-            <small>
-                Current semester:
-                Spring
-            </small>
+            <small>Spring Semester</small>
         </div>
     </div>
 
-    <!-- charts -->
+    <!-- chart-section -->
 
     <div class="chart-section">
         <div class="charts">
             <h3>Student Enrollment Trend</h3>
-            <p-chart 
-            type="line" 
-            [data]="chartData()" 
-            [options]="chartOptions" 
-            class="basic-chart"/>
+            <p-chart type="line" [data]="chartData()" [options]="chartOptions()" class="basic-chart"></p-chart>
         </div>
 
         <div class="charts">
             <h3>Students by Grade</h3>
-            <p-chart 
-            type="bar" 
-            [data]="basicData()" 
-            [options]="basicOptions"
-            class="bar-chart1" />
+            <p-chart type="bar" [data]="basicData()" [options]="basicOptions()" class="bar-chart1"></p-chart>
         </div>
 
         <div class="charts">
             <h3>Student Status Distribution</h3>
-            <p-chart 
-            type="pie" 
-            [data]="data()" 
-            [options]="options" 
-            class="pie-chart" />
+            <p-chart type="pie" [data]="data()" [options]="options()" class="pie-chart"></p-chart>
         </div>
 
         <div class="charts">
             <h3>Department Overview</h3>
-            <p-chart 
-            type="bar" 
-            [data]="barData()" 
-            [options]="barOptions" 
-            class="bar-chart" />
+            <p-chart type="bar" [data]="barData()" [options]="barOptions()" class="bar-chart"></p-chart>
         </div>
     </div>
 
-    <!-- Summary -->
+    <!-- summary cards -->
 
     <div class="quick-stats-card">
         <h3 class="title">Quick Stats Summary</h3>
         <div class="stats-container">
             <div class="stat-item">
                 <div class="stat-content blue">
-                    <div class="label">Average Students per teacher</div>
+                    <div class="label">Avg Students per Teacher</div>
                     <div class="value">{{ avgStudentsPerTeacher() }}</div>
                 </div>
             </div>
-
             <div class="stat-item">
                 <div class="stat-content green">
-                    <div class="label">Student Retention Rate</div>
+                    <div class="label">Retention Rate</div>
                     <div class="value">{{ studentRetentionRate() }}%</div>
                 </div>
             </div>
-
             <div class="stat-item">
                 <div class="stat-content purple">
                     <div class="label">Staff to Student Ratio</div>

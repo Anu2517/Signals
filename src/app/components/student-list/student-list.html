@@ -24,7 +24,7 @@
       icon="pi pi-plus"
       label="Add Student"
       class="p-button-primary"
-      (click)="addCmp.show()">
+      (click)="openAddStudent()">
     </button>
   </div>
 
@@ -38,18 +38,13 @@
     [value]="students()"
     dataKey="id"
     [globalFilterFields]="['id','name','email','age','course']"
-    [paginator]="true"
     [(selection)]="selectedStudents"
     selectionMode="multiple"
-    [rows]="5"
-    [rowsPerPageOptions]="[5,10,15]"
-    [showCurrentPageReport]="true"
-    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-    paginatorTemplate="
-      CurrentPageReport
-      PageLinks
-      RowsPerPageDropdown
-    "
+    [virtualScroll]="true"
+    [virtualScrollItemSize]="48"
+    scrollHeight="100vh"
+    [scrollable]='true'
+    
   >
  
     <ng-template pTemplate="caption">
@@ -75,7 +70,7 @@
           optionValue="value"
           placeholder="All Status"
           (onChange)="dt.filter($event.value, 'status', 'equals')"
-          styleClass="w-12rem">
+          class="select-status">
         </p-select>
 
         <p-select
@@ -85,7 +80,7 @@
           optionValue="value"
           placeholder="All Grades"
           (onChange)="dt.filter($event.value, 'grade', 'equals')"
-          styleClass="w-12rem">
+          class="select-grade">
         </p-select>
       </div>
 
@@ -107,18 +102,12 @@
     <ng-template pTemplate="header">
       <tr>
         <th style="width: 3rem"><p-tableHeaderCheckbox></p-tableHeaderCheckbox></th>
-        <th pSortableColumn="id" style="min-width: 100px">ID <p-sortIcon field="id"></p-sortIcon></th>
-        <th pSortableColumn="name" style="min-width: 100px">Name <p-sortIcon field="name"></p-sortIcon></th>
-        <th pSortableColumn="email" style="min-width: 150px">Email <p-sortIcon field="email"></p-sortIcon></th>
-        <th pSortableColumn="grade" style="min-width: 100px">Grade <p-sortIcon field="grade"></p-sortIcon></th>
-        <th pSortableColumn="subject" style="min-width: 150px">Subject <p-sortIcon field="subject"></p-sortIcon></th>
-        <th pSortableColumn="department" style="min-width: 150px">Department <p-sortIcon field="department"></p-sortIcon></th>
-        <th pSortableColumn="enrollmentDate" style="min-width: 150px">Enrollment <p-sortIcon field="enrollmentDate"></p-sortIcon></th>
-        <th pSortableColumn="status" style="min-width: 100px">
-            <div class="flex items-center gap-2">
-              Status
-              <p-sortIcon field="status" />
-            </div>
+        <th *ngFor="let col of columns()"
+            [pSortableColumn]="col.field"
+            [style.width]="col.width"
+            [style.min-width]="col.width">
+          {{ col.header }}
+          <p-sortIcon [field]="col.field"></p-sortIcon>
         </th>
         <th style="min-width: 150px">Actions</th>
       </tr>
@@ -127,45 +116,28 @@
     <ng-template pTemplate="body" let-student>
       <tr class="student-row">
         <td><p-tableCheckbox [value]="student"></p-tableCheckbox></td>
-        <td>{{ student.id }}</td>
-        <td>{{ student.name }}</td>
-        <td>{{ student.email }}</td>
-        <td>{{ student.grade }}</td>
-        <td>{{ student.subject }}</td>
-        <td>{{ student.department }}</td>
-        <td>{{ student.enrollmentDate }}</td>
-
-        <td>
-          <p-tag [value]="student.status" [severity]="getSeverity(student.status)" />
+        <td *ngFor="let col of columns()">
+          <ng-container [ngSwitch]="col.type">
+            <p-tag *ngSwitchCase="'tag'" [value]="student[col.field]" [severity]="getSeverity(student[col.field])"></p-tag>
+            <span *ngSwitchDefault>{{ student[col.field] }}</span>
+          </ng-container>
         </td>
-
         <td class="actions-column">
-          <button
-            pButton
-            icon="pi pi-pencil"
-            class="p-button-text p-button-success"
-            (click)="editStudent(student)"
-          ></button>
-
-          <button
-            pButton
-            icon="pi pi-trash"
-            class="p-button-text p-button-danger"
-            (click)="onDelete(student)"
-          ></button>
+          <button pButton icon="pi pi-pencil" class="p-button-text p-button-success" (click)="editStudent(student)"></button>
+          <button pButton icon="pi pi-trash" class="p-button-text p-button-danger" (click)="onDelete(student)"></button>
         </td>
       </tr>
     </ng-template>
 
     <ng-template pTemplate="emptymessage">
       <tr>
-        <td colspan="8">No students found.</td>
+        <td [attr.colspan]="columns().length + 2">No students found.</td>
       </tr>
     </ng-template>
-
+    
   </p-table>
 
-  <app-add-students #addCmp></app-add-students>
+  <app-add-students></app-add-students>
 
   <app-update-student></app-update-student>
 

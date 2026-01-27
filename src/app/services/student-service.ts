@@ -23,6 +23,7 @@ export class StudentService {
   private _students = signal<Student[]>([]);
 
   dialogVisible = signal(false);
+  addDialogVisible = signal(false);
   selectedStudentId = signal<number | null>(null);
 
   readonly students = this._students.asReadonly();
@@ -88,6 +89,14 @@ export class StudentService {
   closeDialog() {
     this.dialogVisible.set(false);
     this.selectedStudentId.set(null);
+  }
+
+  openAddDialog() {
+    this.addDialogVisible.set(true);
+  }
+
+  closeAddDialog() {
+    this.addDialogVisible.set(false);
   }
 
 

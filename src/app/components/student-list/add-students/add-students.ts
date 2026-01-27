@@ -22,7 +22,7 @@ export class AddStudents {
   enrollmentDate = '';
   status = 'Active';
 
-  display = false;
+  display = this.service.addDialogVisible;
 
   student: Partial<Student> = {
     id: 0,
@@ -35,13 +35,8 @@ export class AddStudents {
     status: undefined
   };
 
-  show() {
-    this.display = true;
-    this.student = { id: 0, name: '', email: '', grade: '', course: '',department: '', status: 'Active' };
-  }
-
   cancel() {
-    this.display = false;
+    this.service.closeAddDialog();
   }
 
   add() {
@@ -58,7 +53,7 @@ export class AddStudents {
       status: this.student.status ?? 'Active',
     });
 
-    this.display = false;
+    this.service.closeAddDialog();
   }
 
 }

@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Student, StudentService } from '../../services/student-service';
@@ -37,6 +37,31 @@ export class StudentList {
   students = this.service.students;
   selectedStudents: Student[] = []; //delete multiple students
   globalFilter = '';
+
+  // to add 1000 columns
+  columns = computed(() => {
+    const data = this.students(); // reactive
+    if (!data || data.length === 0) return [];
+
+    const customWidths: Record<string, string> = {
+      id: '80px',
+      age: '80px',
+      email: '250px',
+      status: '120px',
+      enrollmentDate: '240px'
+    };
+
+    return Object.keys(data[0]).map(key => ({
+      field: key,
+      header: key.charAt(0).toUpperCase() + key.slice(1),
+      width: customWidths[key] || '150px',
+      type: key === 'status' ? 'tag' : 'text'
+    }));
+  });
+
+  openAddStudent() {
+    this.service.openAddDialog();
+  }
 
   editStudent(student: Student) {
     this.service.openDialog(student.id);
