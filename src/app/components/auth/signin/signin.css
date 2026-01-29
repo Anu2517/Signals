@@ -1,0 +1,146 @@
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  /* background: #f4f6fb; */
+  padding: 20px;
+}
+
+.sign-card {
+  width: 100%;
+  max-width: 420px;
+}
+
+.sign-card h2,
+.sign-card p {
+  text-align: center;
+  margin: 0;
+}
+
+.sign-card h2 {
+  margin-bottom: 6px;
+  font-weight: 600;
+  font-size: 1.8rem;
+}
+
+.sign-card p {
+  color: #6b7280;
+  margin-bottom: 20px;
+}
+
+.card {
+  /* background: #ffffff; */
+  padding: 28px;
+  border-radius: 14px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+input {
+  width: 100%;
+  margin-bottom: 6px;
+  padding: 13px;
+  border-radius: 12px;
+}
+
+.p-inputtext:focus {
+  border-color: #f44336 !important;
+  outline: none;
+}
+
+
+.error {
+  color: #f44336;
+  font-size: 15px;
+  display: block;
+  margin-bottom: 12px;
+}
+
+button[pButton] {
+  background-color: #104ccc;
+  color: white;
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  border: none;
+  padding: 15px;
+}
+
+button[pButton]:hover {
+  border: none;
+  background-color: #2563eb;
+}
+
+.signup-text {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 14px;
+  border-bottom: 0.5px solid rgb(216, 213, 213);
+}
+
+.signup-text a {
+  color: #2563eb;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.signup-text a:hover {
+  text-decoration: underline;
+}
+
+.logo {
+  width: 72px;
+  height: 72px;
+  background: #2563eb;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 18px;
+}
+
+.logo i {
+  font-size: 34px;
+  color: #ffffff;
+}
+
+label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1f2937;
+  margin-bottom: 8px;
+}
+
+.required {
+  color: #ef4444;
+}
+
+small {
+  margin-bottom: 1.5rem;
+}
+
+.signup-text {
+  font-size: 1rem;
+  padding-bottom: 1rem;
+}
+
+.demo {
+  margin-left: 1rem;
+  opacity: 0.6;
+  font-size: 0.9rem;
+}
+
+
+:host-context(.p-dark) .card {
+  background: #0f172a;
+}
+
+:host-context(.p-dark) label {
+  color: #ffffff;
+}
+
+:host-context(.p-dark) .signup-text {
+ border-bottom: 0.5px solid ;
+  background: transparent; 
+}

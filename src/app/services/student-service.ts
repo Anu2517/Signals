@@ -38,15 +38,17 @@ export class StudentService {
     this.loadInitialData();
   }
 
-  private loadInitialData(): void {
-    this.http.get<Student[]>(this.apiUrl).subscribe({
-      next: (data) => this._students.set(data),
-      error: (err) => {
-        console.error('Failed loading students', err);
-        this._students.set([]);
-      }
-    });
-  }
+loadInitialData(): void {
+  this.http.get<Student[]>(this.apiUrl).subscribe({
+    next: (data) => {
+      this._students.set(data);
+    },
+    error: (err) => {
+      console.error('Failed loading students', err);
+      this._students.set([]); 
+    }
+  });
+}
 
   addStudent(student: Student): Student {
     const nextId = this._students().length > 0

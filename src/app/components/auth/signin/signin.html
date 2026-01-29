@@ -1,0 +1,64 @@
+<p-toast position="top-right"></p-toast>
+<div class="auth-container">
+  <div class="sign-card">
+
+    <div class="logo">
+      <i class="pi pi-graduation-cap"></i>
+    </div>
+
+    <h2>School Management System</h2>
+    <p>Sign in to your account</p>
+
+    <form [formGroup]="signInForm" class="card" (ngSubmit)="login()">
+      <label for="email">Email Address<span class="required">*</span></label>
+      <input
+        pInputText
+        type="email"
+        placeholder="Enter your email"
+        formControlName="email"
+      />
+
+      <small class="error" *ngIf="f['email'].touched && f['email'].invalid">
+        <span *ngIf="f['email'].errors?.['required']">
+          Email is required
+        </span>
+        <span *ngIf="f['email'].errors?.['email']">
+          Enter a valid email
+        </span>
+      </small>
+
+      <label for="password">Password<span class="required">*</span></label>
+      <input
+        pInputText
+        type="password"
+        placeholder="Enter your password"
+        formControlName="password"
+      />
+
+      <small class="error" *ngIf="f['password'].touched && f['password'].invalid">
+        <span *ngIf="f['password'].errors?.['required']">
+          Password is required
+        </span>
+        <span *ngIf="f['password'].errors?.['minlength']">
+          Password must be at least 6 characters
+        </span>
+      </small>
+
+      <button
+        pButton
+        type="submit"
+        label="Sign In"
+        icon="pi pi-sign-in"
+      >
+      </button>
+
+      <p class="signup-text">
+        Don't have an account?
+        <a routerLink="/signup">Sign Up</a>
+      </p>
+
+      <small class="demo">Demo: Create an account or use any registered email</small>
+
+    </form>
+  </div>
+</div>

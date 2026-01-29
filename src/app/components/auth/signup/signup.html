@@ -1,0 +1,52 @@
+<div class="auth-container">
+  <div class="sign-card">
+
+    <div class="logo">
+      <i class="pi pi-graduation-cap"></i>
+    </div>
+
+    <h2>School Management System</h2>
+    <p>Create a new account</p>
+
+    <form [formGroup]="signupForm" class="card" (ngSubmit)="onSubmit()">
+
+      <label for="name">Name <span class="required">*</span></label>
+      <input pInputText type="text" placeholder="Enter your full Name" formControlName="name" />
+      <small class="error" *ngIf="f['name'].touched && f['name'].invalid">
+        Name is required
+      </small>
+
+      <label for="email">Email <span class="required">*</span></label>
+      <input pInputText type="email" placeholder="Enter your email" formControlName="email" />
+      <small class="error" *ngIf="f['email'].touched && f['email'].invalid">
+        Enter a valid email
+      </small>
+
+      <label for="password">Password <span class="required">*</span></label>
+      <input pInputText type="password" placeholder="Enter your password" formControlName="password" />
+      <small class="error" *ngIf="f['password'].touched && f['password'].invalid">
+        Minimum 6 characters required
+      </small>
+
+      <label for="confirmPassword">Confirm Password <span class="required">*</span></label>
+      <input pInputText type="password" placeholder="Confirm your password" formControlName="confirmPassword" />
+      <small class="error" *ngIf="f['confirmPassword'].touched && f['confirmPassword'].invalid">
+        Confirm your password
+      </small>
+
+      <button 
+        pButton 
+        type="submit" 
+        label="Create Account" 
+        icon="pi pi-user-plus"
+      >
+      </button>
+
+      <p class="signup-text">
+        Already have an account?
+        <a routerLink="/signin">Sign In</a>
+      </p>
+
+    </form>
+  </div>
+</div>

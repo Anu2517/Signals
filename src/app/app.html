@@ -1,6 +1,18 @@
+<p-toast position="top-right"></p-toast>
 <div class="app-container">
-  <aside class="sidebar">
+  <aside class="sidebar" *ngIf="showSidebar">
     <h2 class="logo">{{ title }}</h2>
+
+    <div class="user-profile" *ngIf="auth.user$() as user">
+      <div class="avatar">
+        {{ user.name ? user.name.charAt(0).toUpperCase() : 'U' }}
+      </div>
+
+      <div class="user-info">
+        <div class="user-name">{{ user.name }}</div>
+        <div class="user-role">{{ user.role }}</div>
+      </div>
+    </div>
 
     <nav class="menu">
       <a routerLink="/dashboard" routerLinkActive="active">
@@ -24,14 +36,17 @@
       </a>
     </nav>
 
-   <div class="theme-toggle" (click)="toggleTheme()">
-      <i class="pi" [class.pi-moon]="!isDark" [class.pi-sun]="isDark"></i>
-      <span>{{ isDark ? 'Light Mode' : 'Dark Mode' }}</span>
+    <div class="sidebar-footer">
+      <div class="theme-toggle" (click)="toggleTheme()">
+        <i class="pi" [class.pi-moon]="!isDark" [class.pi-sun]="isDark"></i>
+        <span>{{ isDark ? 'Light Mode' : 'Dark Mode' }}</span>
+      </div>
+
+      <button class="logout" (click)="logout()"><i class="pi pi-sign-out"></i> Logout</button>
     </div>
-    
   </aside>
+
   <main class="main-content">
     <router-outlet></router-outlet>
-
   </main>
 </div>
