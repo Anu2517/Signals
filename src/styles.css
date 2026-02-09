@@ -1,4 +1,5 @@
-html, body {
+html,
+body {
     font-size: 1rem;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     margin: 0;
@@ -6,11 +7,92 @@ html, body {
     height: 100%;
 }
 
-/* html.p-dark body {
-    background-color: #0f172a; 
-    color: #f1f5f9;
-} */
 
-/* :root {
-    --stat-card-bg: var(--p-surface-0);
-} */
+/* LIGHT THEME*/
+
+:root {
+    --app-bg: #f8fafc;
+    --sidebar-bg: #fcfdfd;
+    --sidebar-border: #e5e7eb;
+
+    --text-primary: #1f2937;
+    --text-secondary: #6b7280;
+    --text-muted: #94a3b8;
+
+    --menu-hover-bg: #f1f5f9;
+    --menu-active-bg: #e0e7ff;
+    --menu-active-text: #1d4ed8;
+
+    --profile-bg: #f1f5f9;
+
+    --danger: #f44336;
+    --danger-hover-bg: rgba(244, 67, 54, 0.1);
+
+    /* cards */
+    --card-bg: #ffffff;
+    --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+    --primary: #2563eb;
+    --primary-soft: #dbeafe;
+
+    --success: #10b981;
+    --success-soft: #d1fae5;
+
+    --warning: #f59e0b;
+    --warning-soft: #fef3c7;
+
+    --indigo: #6366f1;
+    --indigo-soft: #e0e7ff;
+
+    --selectionbar-bg: #e0e7ff;
+
+    --cancel-bg: #e5e7eb;
+    --cancel-bg-hover: #d1d5db;
+    --cancel-text: #111827;
+    --cancel-border: #d1d5db;
+}
+
+/* DARK THEME */
+.p-dark {
+    --app-bg: #0f172a;
+
+    --sidebar-bg: #111827;
+    --sidebar-border: #1f2937;
+
+    --text-primary: #f3f4f6;
+    --text-secondary: #9ca3af;
+    --text-muted: #94a3b8;
+
+    --menu-hover-bg: #1e293b;
+    --menu-active-bg: #1e3a8a;
+    --menu-active-text: #60a5fa;
+
+    --profile-bg: #1e293b;
+
+    --danger: #f87171;
+    --danger-hover-bg: rgba(248, 113, 113, 0.15);
+
+    /* cards */
+    --card-bg: #1e293b;
+    --card-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+
+    --primary: #60a5fa;
+    --primary-soft: rgba(96, 165, 250, 0.2);
+
+    --success: #34d399;
+    --success-soft: rgba(52, 211, 153, 0.2);
+
+    --warning: #fbbf24;
+    --warning-soft: rgba(251, 191, 36, 0.2);
+
+    --indigo: #a5b4fc;
+    --indigo-soft: rgba(165, 180, 252, 0.2);
+
+    --selectionbar-bg: #1d2942;
+ 
+    --cancel-bg: #595c61;
+    --cancel-bg-hover: #d1d5db;
+    --cancel-text: #ffffff;
+    --cancel-border: #d1d5db;
+    
+}

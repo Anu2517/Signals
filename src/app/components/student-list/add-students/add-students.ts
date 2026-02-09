@@ -19,20 +19,19 @@ export class AddStudents {
   phone = '';
   guardianName = '';
   address = '';
-  enrollmentDate = '';
-  status = 'Active';
 
   display = this.service.addDialogVisible;
 
   student: Partial<Student> = {
     id: 0,
-    name: '',
+    firstName: '',
+    lastName: '',
+    age: 0,
     email: '',
-    grade: '',
     course: '',
+    year: 0,
+    rollNumber: '',
     enrollmentDate: new Date(),
-    department: '',
-    status: undefined
   };
 
   cancel() {
@@ -40,20 +39,27 @@ export class AddStudents {
   }
 
   add() {
-    if (!this.student.name || !this.student.email ) return;
-
-    this.service.addStudent({
-      id: 0,
-      name: this.student.name,
-      email: this.student.email,
-      grade: this.student.grade ?? '',
-      course: this.student.course ?? '',
-      enrollmentDate: this.student.enrollmentDate ?? new Date(),
-      department: this.student.department ?? '',
-      status: this.student.status ?? 'Active',
-    });
-
-    this.service.closeAddDialog();
+  if (!this.student.firstName || !this.student.lastName || !this.student.email || !this.student.rollNumber) {
+    console.warn('Missing required fields');
+    return;
   }
+
+  const payload: Student = {
+    id: 0,
+    firstName: this.student.firstName.trim(),
+    lastName: this.student.lastName.trim(),
+    age: this.student.age ?? 0,
+    email: this.student.email.trim(),
+    course: this.student.course ?? '',
+    year: this.student.year ?? 0,
+    rollNumber: this.student.rollNumber.trim(),
+    enrollmentDate: this.student.enrollmentDate
+      ? new Date(this.student.enrollmentDate)
+      : new Date()
+  };
+
+  this.service.addStudent(payload);
+}
+
 
 }

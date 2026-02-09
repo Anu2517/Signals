@@ -3,22 +3,23 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 
 export interface Student {
   id: number;
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
-  grade: string;
+  age: number;
   course: string;
+  year: number;
+  rollNumber: string;
   enrollmentDate: Date;
-  department: string;
-  status: 'Active' | 'Inactive' | 'Graduated';
 }
-
 
 @Injectable({
   providedIn: 'root',
 })
 export class StudentService {
   private http = inject(HttpClient);
-  private apiUrl = 'Data/students.json';
+  // private apiUrl = 'http://localhost:4001/students';
+  private GetAllStudentsUrl = 'http://192.168.5.13:5078/api/students'
 
   private _students = signal<Student[]>([]);
 
@@ -38,52 +39,140 @@ export class StudentService {
     this.loadInitialData();
   }
 
-loadInitialData(): void {
-  this.http.get<Student[]>(this.apiUrl).subscribe({
-    next: (data) => {
-      this._students.set(data);
-    },
-    error: (err) => {
-      console.error('Failed loading students', err);
-      this._students.set([]); 
-    }
-  });
-}
+  // private getAuthHeaders(): HttpHeaders | null {
+  //   const token = localStorage.getItem('token');
 
-  addStudent(student: Student): Student {
-    const nextId = this._students().length > 0
-      ? Math.max(...this._students().map(s => s.id)) + 1 : 1;
-    const newStudent = { ...student, id: nextId };
-    this._students.update(list => [...list, newStudent]);
-    return newStudent;
+  //   if (!token) {
+  //     console.error('No token found');
+  //     return null;
+  //   }
+
+  //   return new HttpHeaders({
+  //     Authorization: `Bearer ${token}`,
+  //     'Content-Type': 'application/json'
+  //   });
+  // }
+
+  // Get all the students
+  loadInitialData(): void {
+    // const headers = this.getAuthHeaders();
+    // if (!headers) return;
+
+    this.http.get<Student[]>(this.GetAllStudentsUrl).subscribe({
+      next: students => {
+        this._students.set(students);
+      },
+      error: err => {
+        console.error('Failed loading students', err);
+      }
+    });
   }
 
-  updateStudent(updated: Student) {
-    this._students.update(list =>
-      list.map(s => (s.id === updated.id ? { ...updated } : s))
-    );
+  //Get student by ID
+
+  getStudentByIdApi(id: number): void {
+    // const headers = this.getAuthHeaders();
+    // if (!headers) return;
+
+    this.http.get<Student>(`${this.GetAllStudentsUrl}/${id}`).subscribe({
+      next: student => {
+        this._students.set([student]);
+        this.selectedStudentId.set(student.id);
+      },
+      error: err => {
+        console.error(`Failed loading student with id ${id}`, err);
+        this._students.set([]);
+      }
+    });
   }
 
+  // Adds a new Student
+
+  addStudent(student: Student): void {
+    // const headers = this.getAuthHeaders();
+    // if (!headers) return;
+
+    const { id, ...newStudent } = student;
+
+    const apiPayload: any = {
+      ...newStudent,
+      RollNumber: newStudent.rollNumber,
+      enrollmentDate: new Date(newStudent.enrollmentDate).toISOString()
+    };
+
+    this.http.post<Student>(this.GetAllStudentsUrl, apiPayload)
+      .subscribe({
+        next: createdStudent => {
+          this._students.update(list => [...list, createdStudent]);
+          this.closeAddDialog();
+        },
+        error: err => {
+          const message =
+            err?.error?.message ??
+            'Failed to add student';
+
+          alert(message);
+          console.error('Add student failed:', err);
+        }
+      });
+  }
+
+  // UPDATE student
+  updateStudentApi(student: Student): void {
+    // const headers = this.getAuthHeaders();
+    // if (!headers) return;
+
+    const apiPayload: any = {
+      ...student,
+      RollNumber: student.rollNumber,
+      enrollmentDate: new Date(student.enrollmentDate).toISOString()
+    };
+
+    this.http.put<Student>(
+      `${this.GetAllStudentsUrl}/${student.id}`,
+      apiPayload
+    ).subscribe({
+      next: updatedStudent => {
+        this._students.update(list =>
+          list.map(s => s.id === updatedStudent.id ? updatedStudent : s)
+        );
+        this.closeDialog();
+      },
+      error: err => {
+        alert(err?.error?.message ?? 'Failed to update student');
+        console.error('Update student failed:', err);
+      }
+    });
+  }
 
   //delete single student
-  deleteStudent(id: number) {
-    this._students.update(list => list.filter(s => s.id !== id));
-  }
 
+  deleteStudentApi(id: number): void {
+  // const headers = this.getAuthHeaders();
+  // if (!headers) return;
+
+  this.http
+    .delete(`${this.GetAllStudentsUrl}/${id}`)
+    .subscribe({
+      next: () => {
+        this._students.update(list =>
+          list.filter(s => s.id !== id)
+        );
+      },
+      error: err => {
+        alert(err?.error?.message ?? 'Failed to delete student');
+        console.error('Delete student failed:', err);
+      }
+    });
+}
 
   //delete multiple students
 
-  deleteStudents(ids: number[]) {
-    this._students.update(list => list.filter(s => !ids.includes(s.id)));
+  deleteStudentsApi(ids: number[]): void {
+    ids.forEach(id => this.deleteStudentApi(id));
   }
-
-  getStudentById(id: number) {
-    return this._students().find(s => s.id === id) ?? null;
-  }
-
 
   openDialog(id: number) {
-    debugger;
     this.selectedStudentId.set(id);
     this.dialogVisible.set(true);
   }
@@ -100,6 +189,5 @@ loadInitialData(): void {
   closeAddDialog() {
     this.addDialogVisible.set(false);
   }
-
 
 }

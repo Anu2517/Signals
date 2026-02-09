@@ -58,16 +58,20 @@ export class Signup {
       return;
     }
 
+    const signupEmail = this.f['email'].value;
+
     this.auth.signUp({
       name: this.f['name'].value,
-      email: this.f['email'].value,
+      email: signupEmail,
       password: this.f['password'].value
     });
 
     this.messageService.add({ severity: 'success', summary: 'Account created Successfully! Please login', life: 3000 });
     this.signupForm.reset();
     this.formSubmitted = false;
-      this.router.navigate(['/signin']);
+    this.router.navigate(['/signin'], {
+      state: { email: signupEmail }
+    });
   }
 
   isInvalid(controlName: string): boolean {

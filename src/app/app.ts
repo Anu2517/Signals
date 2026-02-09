@@ -6,11 +6,13 @@ import { ToggleButtonModule } from 'primeng/togglebutton';
 import { AuthService } from './services/auth-service';
 import { CommonModule } from '@angular/common';
 import { ToastModule } from 'primeng/toast';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
+    HttpClientModule,
     CommonModule,
     RouterOutlet,
     RouterLink,

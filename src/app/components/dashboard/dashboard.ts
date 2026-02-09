@@ -2,14 +2,14 @@ import { Component, computed, inject, signal, OnInit, OnDestroy } from '@angular
 import { StudentService } from '../../services/student-service';
 import { TeacherService } from '../../services/teacher-service';
 import { WorkerService } from '../../services/worker-service';
-import { ChartModule } from 'primeng/chart';
 import { CardModule } from 'primeng/card';
 import { CommonModule } from '@angular/common';
+import { NgxEchartsDirective } from 'ngx-echarts';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [ChartModule, CardModule, CommonModule],
+  imports: [CardModule, CommonModule, NgxEchartsDirective],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
@@ -49,16 +49,18 @@ export class Dashboard implements OnInit, OnDestroy {
   totalStudents = computed(() => 
     this.studentService.students().length);
 
-  activeStudents = computed(() => 
-    this.studentService.students().filter(s => s.status === 'Active').length);
+  activeStudents = computed(() => {
+    return this.studentService.students().filter(s =>
+      !!s.enrollmentDate && !isNaN(new Date(s.enrollmentDate).getTime())
+    ).length;
+  });
 
-  inactiveStudents = computed(() => 
-    this.studentService.students().filter(s => s.status === 'Inactive').length);
-
-  graduatedStudents = computed(() => 
-    this.studentService.students().filter(s => s.status === 'Graduated').length);
-
-
+  inactiveStudents = computed(() => {
+    return this.studentService.students().filter(s =>
+      !s.enrollmentDate || isNaN(new Date(s.enrollmentDate).getTime())
+    ).length;
+  });
+  
   studentGrowthPercent = computed(() => {
     const students = this.studentService.students();
     if (students.length === 0) return 0;
@@ -104,143 +106,248 @@ export class Dashboard implements OnInit, OnDestroy {
     return staff === 0 ? 0 : Math.round((this.totalWorkers() / staff) * 100);
   });
 
-  // Charts
+  // E-Charts
 
-  chartData = computed(() => {
+  //Line Chart
+
+  enrollmentOption = computed(() => {
     const students = this.studentService.students();
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    const counts = months.map((_, i) => students.filter(s => new Date(s.enrollmentDate).getMonth() === i).length);
-    return {
-      labels: months,
-      datasets: [
-        { 
-          label: 'Enrollment', 
-          data: counts, 
-          borderColor: '#3b82f6', 
-          tension: 0.4 }]
-    };
-  });
+      const counts = months.map((_, i) =>
+    students.filter(s => {
+      if (!s.enrollmentDate) return false;
+ 
+      const d = new Date(s.enrollmentDate);
+      return !isNaN(d.getTime()) && d.getMonth() === i;
+    }).length
+  );
 
-  basicData = computed(() => {
-    const students = this.studentService.students();
-    const grades = ['9th', '10th', '11th', '12th'];
-    return {
-      labels: grades,
-      datasets: [
-        { 
-          label: 'Students', 
-          data: grades.map(g => students.filter(s => s.grade === g).length), 
-          backgroundColor: '#3b82f6', 
-          borderRadius: 6 }]
-    };
-  });
+    const colors = this.chartColors();
 
-  data = computed(() => ({
-    labels: ['Active', 'Inactive', 'Graduated'],
-    datasets: [{
-      data: [this.activeStudents(), this.inactiveStudents(), this.graduatedStudents()],
-      backgroundColor: ['#10b981', '#ef4444', '#3b82f6'],
-      borderWidth: 2
-    }]
-  }));
-
-  barData = computed(() => {
-    const teachers = this.teacherService.teachers();
-    const students = this.studentService.students();
-    const depts = Array.from(new Set([...teachers.map(t => t.department), ...students.map(s => s.department)])).filter(d => d);
     return {
-      labels: depts,
-      datasets: [
-        { label: 'Teachers', 
-          data: depts.map(d => teachers.filter(t => t.department === d).length), 
-          backgroundColor: '#10b981', 
-          borderRadius: 4 
+      tooltip: {
+      trigger: 'axis'
+    },
+    xAxis: {
+      type: 'category',
+      data: months,
+      axisLabel: {
+        interval: 0,
+        color: colors.text
+      }
+    },
+    yAxis: {
+      type: 'value',
+      min: 0,
+      // max: 10,
+      // interval: 1,
+      axisLabel: {
+        color: colors.text
+      },
+      splitLine: {
+        lineStyle: {
+          color: colors.grid
+        }
+      }
+    },
+    series: [
+      {
+        name: 'Enrollment',
+        type: 'line',
+        data: counts,
+        smooth: true,
+        symbol: 'circle',
+        symbolSize: 6,
+        lineStyle: {
+          color: '#3b82f6',
+          width: 3
         },
-        { label: 'Students', 
-          data: depts.map(d => students.filter(s => s.department === d).length), 
-          backgroundColor: '#3b82f6', 
-          borderRadius: 4 
+        itemStyle: {
+          color: '#3b82f6'
+        }
+      }
+    ]
+    };
+  });
+
+  //Bar Chart
+
+  basicBarOption = computed(() => {
+    const students = this.studentService.students();
+    const colors = this.chartColors();
+
+    const courses = Array.from(
+      new Set(students.map(s => s.course).filter(c => !!c))
+    );
+
+    const data = courses.map(
+      c => students.filter(s => s.course === c).length
+    );
+
+    return {
+      tooltip: { trigger: 'axis' },
+      xAxis: {
+        type: 'category',
+        data: courses,
+        axisLabel: {
+          color: colors.text,
+          interval: 0    
+        }
+      },
+      yAxis: {
+        type: 'value',
+        min: 0,
+        max: 10,
+        axisLabel: { color: colors.text },
+        splitLine: {
+          lineStyle: {
+            color: colors.grid
+          }
+        }
+      },
+      series: [
+        {
+          name: 'Students',
+          type: 'bar',
+          data,
+          itemStyle: {
+            color: '#3b82f6',
+            borderRadius: [6, 6, 0, 0]
+          }
         }
       ]
     };
   });
 
-  // --- Chart Options ---
-  chartOptions = computed(() => this.getOptions());
-  basicOptions = computed(() => this.getOptions(true));
-  barOptions = computed(() => this.getOptions(true));
-  options = computed(() => {
-  const colors = this.chartColors();
+  //Pie Chart
+
+  yearsPieOption = computed(() => {
+    const colors = this.chartColors();
+    const students = this.studentService.students();
+    const yearCounts = students.reduce((acc: Record<string, number>, s) => {
+      if (s.year !== null && s.year !== undefined) {
+        const key = `Year ${s.year}`;
+        acc[key] = (acc[key] || 0) + 1;
+      }
+      return acc;
+    }, {} as Record<string, number>);
+
+    const years = Object.keys(yearCounts);
+
+    const palette = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6'];
+
+    const data = years.map((y, i) => ({
+      value: yearCounts[y],
+      name: y,
+      itemStyle: { color: palette[i % palette.length] }
+    }));
 
   return {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: 'top',
-        labels: {
-          color: colors.text  
+    tooltip: { trigger: 'item' },
+    legend: {
+      orient: 'vertical',
+      left: 'left',
+      textStyle: { color: colors.text }
+    },
+    series: [
+      {
+        name: 'Students',
+        type: 'pie',
+        radius: '65%',
+        data,
+        label: { color: colors.text },
+        itemStyle: {
+          borderColor: colors.border,
+          borderWidth: 2
         }
-      },
-      tooltip: {
-        titleColor: colors.text,
-        bodyColor: colors.text
       }
-    }
+    ]
   };
-});
+  });
 
+  // Bar Chart
 
-  private getOptions(showGrid = true) {
+  departmentOption = computed(() => {
+    const teachers = this.teacherService.teachers();
+    const students = this.studentService.students();
+    const depts = Array.from(new Set([...teachers.map(t => t.department), ...students.map(s => s.course)])).filter(d => d);
+
     const colors = this.chartColors();
+
     return {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          labels: {
-            color: colors.text 
-          }
-        }
+       tooltip: {
+      trigger: 'axis'
+    },
+    legend: {
+      data: ['Teachers', 'Students'],
+      textStyle: {
+        color: colors.text
+      }
+    },
+    xAxis: {
+      type: 'category',
+      data: depts,
+      axisLabel: {
+        interval: 0,
+        color: colors.text
+      }
+    },
+    yAxis: {
+      type: 'value',
+      axisLabel: {
+        color: colors.text
       },
-      scales: {
-        y: {
-          ticks: {
-            color: colors.text 
-          },
-          grid: {
-            color: colors.grid, 
-            display: showGrid,
-            drawBorder: false
-          }
-        },
-        x: {
-          ticks: {
-            color: colors.text 
-          },
-          grid: {
-            color: colors.grid, 
-            display: showGrid,
-            drawBorder: false
-          }
+      splitLine: {
+        lineStyle: {
+          color: colors.grid
         }
       }
+    },
+    series: [
+      {
+        name: 'Teachers',
+        type: 'bar',
+        data: depts.map(d =>
+          teachers.filter(t => t.department === d).length
+        ),
+        itemStyle: {
+          color: '#10b981',
+          borderRadius: [4, 4, 0, 0]
+        }
+      },
+      {
+        name: 'Students',
+        type: 'bar',
+        data: depts.map(d =>
+          students.filter(s => s.course === d).length
+        ),
+        itemStyle: {
+          color: '#3b82f6',
+          borderRadius: [4, 4, 0, 0]
+        }
+      }
+    ]
     };
-  }
-
+  });
+  
   // --- Summary Calculations ---
 
   avgStudentsPerTeacher = computed(() => 
     this.totalTeachers() === 0 ? '0' :
-   (this.totalStudents() / this.totalTeachers()).toFixed(1));
+   (this.totalStudents() / this.totalTeachers()).toFixed(2));
+ 
+  studentRetentionRate = computed(() => {
+    const total = this.totalStudents();
+    if (total === 0) return 0;
+    const active = this.activeStudents();
+    return Math.round((active / total) * 100);
+  });
 
-
-  studentRetentionRate = computed(() => 
-    this.totalStudents() === 0 ? 0 : 
-    Math.round((this.activeStudents() / this.totalStudents()) * 100));
-
-
-  staffToStudentRatio = computed(() => 
-    this.totalStudents() === 0 ? '0.0' :
-   `1:${Math.round(this.totalStudents() / this.totalStaff())}`);
+  staffToStudentRatio = computed(() => {
+    const staff = this.totalStaff();
+    const students = this.totalStudents();
+    if (staff === 0 || students === 0) return '0:0';
+    const perStaff = Math.max(1, Math.round(students / staff));
+    return `1:${perStaff}`;
+  });
 }

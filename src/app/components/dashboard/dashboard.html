@@ -64,27 +64,27 @@
         </div>
     </div>
 
-    <!-- chart-section -->
+    <!-- echart-section -->
 
-    <div class="chart-section">
-        <div class="charts">
+    <div class="echart-section">
+        <div class="e-charts">
             <h3>Student Enrollment Trend</h3>
-            <p-chart type="line" [data]="chartData()" [options]="chartOptions()" class="basic-chart"></p-chart>
+            <div echarts [options]="enrollmentOption()" class="line-chart"></div>
         </div>
 
-        <div class="charts">
-            <h3>Students by Grade</h3>
-            <p-chart type="bar" [data]="basicData()" [options]="basicOptions()" class="bar-chart1"></p-chart>
+        <div class="e-charts">
+            <h3>Students by Course</h3>
+            <div echarts [options]="basicBarOption()" class="bar-chart1"></div>
         </div>
 
-        <div class="charts">
+        <div class="e-charts">
             <h3>Student Status Distribution</h3>
-            <p-chart type="pie" [data]="data()" [options]="options()" class="pie-chart"></p-chart>
+            <div echarts [options]="yearsPieOption()" class="pie-chart"></div>
         </div>
 
-        <div class="charts">
+        <div class="e-charts">
             <h3>Department Overview</h3>
-            <p-chart type="bar" [data]="barData()" [options]="barOptions()" class="bar-chart"></p-chart>
+            <div echarts [options]="departmentOption()" class="bar-chart"></div>
         </div>
     </div>
 

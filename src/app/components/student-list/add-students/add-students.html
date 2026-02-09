@@ -1,32 +1,51 @@
 <p-dialog header="Add student" [(visible)]="display" [modal]="true" [style]="{width: '600px'}" [baseZIndex]="10000">
   <div class="p-fluid add-form">
-    <!-- <div class="p-field">
-      <label for="id">Id</label>
-      <input pInputText id="id" type="number" [(ngModel)]="student.id" />
-    </div> -->
+    <div class="p-field">
+      <label>First Name <span class="required">*</span></label>
+      <input pInputText [(ngModel)]="student.firstName" />
+    </div>
 
     <div class="p-field">
-      <label for="name">Name <span class="required">*</span></label>
-      <input pInputText id="name" style="min-width: 250px" [(ngModel)]="student.name" />
+      <label>Last Name <span class="required">*</span></label>
+      <input pInputText [(ngModel)]="student.lastName" />
     </div>
 
     <div class="p-field">
       <label for="email">Email <span class="required">*</span></label>
-      <input pInputText id="email" style="min-width: 250px" [(ngModel)]="student.email" />
+      <input pInputText id="email" [(ngModel)]="student.email" />
     </div>
 
     <div class="p-field">
-      <label for="phone">Phone <span class="required">*</span></label>
-      <input pInputText id="phone" style="min-width: 250px" [(ngModel)]="phone" />
+      <label>Age</label>
+      <input pInputText type="number" [(ngModel)]="student.age" />
     </div>
 
     <div class="p-field">
-      <label for="grade">Grade <span class="required">*</span></label>
-      <select class="select" [(ngModel)]="student.grade">
-        <option value="">Select Grade</option>
-        <option value="10th">10th</option>
-        <option value="11th">11th</option>
-        <option value="12th">12th</option>
+      <label>Roll No <span class="required">*</span></label>
+      <input pInputText [(ngModel)]="student.rollNumber" />
+    </div>
+
+    <div class="p-field">
+       <label for="course">Course <span class="required">*</span></label>
+      <select class="select" [(ngModel)]="student.course">
+        <option value="">Select Course</option>
+        <option value="CS">CS</option>
+        <option value="IT">IT</option>
+        <option value="English">English</option>
+        <option value="Sci">Sci</option>
+        <option value="ECE">ECE</option>
+      </select>
+    </div>
+
+    <div class="p-field">
+      <label for="year">Year <span class="required">*</span></label>
+      <select class="select" [(ngModel)]="student.year">
+        <option value="1">Select Year</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
       </select>
     </div>
 
@@ -36,37 +55,25 @@
     </div>
 
     <div class="p-field">
-      <label>Status <span class="required">*</span></label>
-      <select class="select" [(ngModel)]="status">
-        <option value="Active">Active</option>
-        <option value="Inactive">Inactive</option>
-        <option value="Graduated">Graduated</option>
-      </select>
+      <label>Phone</label>
+      <input pInputText [(ngModel)]="phone" />
     </div>
 
     <div class="p-field">
       <label>Guardian Name <span class="required">*</span></label>
-      <input pInputText style="min-width: 250px" [(ngModel)]="guardianName" />
-    </div>
-
-    <div class="p-field">
-      <label for="course">Course <span class="required">*</span></label>
-      <input pInputText id="course" style="min-width: 250px" [(ngModel)]="student.course" />
+      <input pInputText [(ngModel)]="guardianName" />
     </div>
   </div>
 
   <div class="address-field">
-      <label>Address <span class="required">*</span></label>
-      <textarea
-        class="address"
-        rows="4"
-        [(ngModel)]="address">
+    <label>Address <span class="required">*</span></label>
+    <textarea class="address" rows="4" [(ngModel)]="address">
       </textarea>
   </div>
 
   <div class="buttons">
-     <button class="btn btn-cancel" (click)="cancel()">Cancel</button>
-     <button class="btn btn-add" (click)="add()">Add</button>
+    <button class="btn btn-cancel" (click)="cancel()">Cancel</button>
+    <button class="btn btn-add" (click)="add()">Add</button>
   </div>
-  
+
 </p-dialog>

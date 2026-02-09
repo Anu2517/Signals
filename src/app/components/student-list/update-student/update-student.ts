@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, effect, inject, Input, SimpleChanges } from '@angular/core';
+import { Component, effect, inject, Input, signal, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
@@ -24,16 +24,25 @@ export class UpdateStudent {
 
   constructor() {
     effect(() => {
-      const s = this.selectedStudentSignal();
-      this.student = s ? { ...s } : null;
+      const selected = this.service.selectedStudent();
+      this.student = selected ? { ...selected } : null;
     });
   }
 
   save() {
-    if (this.student) {
-      this.service.updateStudent(this.student);
-      this.service.closeDialog();
+    if (!this.student) return;
+
+    const s = this.student;
+
+    if (!s.firstName || !s.lastName || !s.email || !s.rollNumber) {
+      alert('Required fields missing');
+      return;
     }
+
+    this.service.updateStudentApi({
+      ...s,
+      enrollmentDate: new Date(s.enrollmentDate)
+    });
   }
 
   cancel() {

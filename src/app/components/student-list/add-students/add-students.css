@@ -6,7 +6,6 @@
 .add-form {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    /* background: #fff; */
     padding: 0.5rem;
 }
 
@@ -49,6 +48,10 @@ button {
     font-weight: 400;
     font-size: 0.9rem;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+input {
+    min-width: 250px
 }
 
 .required {
@@ -102,12 +105,4 @@ button {
 
 .btn-add:hover {
     background-color: #1976d2;
-}
-
-.btn-cancel {
-    /* background-color: white; */
-}
-
-.btn-cancel:hover {
-    /* background-color: #f5f6f8; */
 }

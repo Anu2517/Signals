@@ -1,5 +1,17 @@
 .add-form .p-field {
     margin-bottom: 0.75rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.p-field input {
+    min-width: 250px;
+}
+
+.add-form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
 }
 
 .add-form label {
@@ -17,7 +29,54 @@
     border-color: #1976d2;
 }
 
+.select {
+    min-width: 205px;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid rgb(183, 194, 204);
+}
+
+.enrollment-date {
+  grid-column: span 2; 
+}
+
+.enrollment-date input {
+  width: 540px;
+  max-width: 100%;
+}
 .buttons {
-    display: flex;
-    gap: 1rem;
+  grid-column: span 2;  
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.btn {
+   min-width: 265px;
+   padding: 10px;
+   border: 1px solid #cbd5e1;
+   border-radius: 8px;
+}
+
+.btn-save {
+   background-color: #155dfc;
+   color: white;
+   border: none;
+}
+
+.btn-save:hover {
+    background-color: #1976d2;
+    border-color: #1976d2;
+}
+
+.btn-cancel {
+  background-color: var(--cancel-bg) !important;
+  color: var(--cancel-text) !important;
+  border: 1px solid var(--cancel-border);
+}
+
+.btn-cancel:hover {
+  background-color: var(--cancel-bg-hover) !important;
+  border: 1px solid var(--cancel-border);
 }

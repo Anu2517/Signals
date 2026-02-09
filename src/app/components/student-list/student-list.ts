@@ -13,7 +13,6 @@ import { InputIconModule } from 'primeng/inputicon';
 import { DialogModule } from 'primeng/dialog';
 import { Select } from 'primeng/select';
 import { AddStudents } from './add-students/add-students';
-import type { TablePageEvent } from 'primeng/table';
 import { UpdateStudent } from './update-student/update-student';
 import { Toast } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
@@ -25,12 +24,12 @@ import { MessageService } from 'primeng/api';
   templateUrl: './student-list.html',
   styleUrl: './student-list.css',
 })
-export class StudentList { 
+export class StudentList {
 
   private service = inject(StudentService);
   constructor(
     private messageService: MessageService
-  ) {}
+  ) { }
 
   title = 'Students';
 
@@ -40,7 +39,7 @@ export class StudentList {
 
   // to add 1000 columns
   columns = computed(() => {
-    const data = this.students(); // reactive
+    const data = this.students(); 
     if (!data || data.length === 0) return [];
 
     const customWidths: Record<string, string> = {
@@ -63,21 +62,40 @@ export class StudentList {
     this.service.openAddDialog();
   }
 
+  // Get student by id
+  onSearchChange(value: string) {
+    const trimmed = value.trim();
+    if (!trimmed) {
+      this.service.loadInitialData();
+      return;
+    }
+
+    const id = Number(trimmed);
+
+    if (!isNaN(id)) {
+      this.service.getStudentByIdApi(id);
+    }
+  }
+
   editStudent(student: Student) {
     this.service.openDialog(student.id);
   }
 
   //delete single student
-  onDelete(student: Student) {
-    if (confirm(`Delete ${student.name}?`)) {
-      this.service.deleteStudent(student.id);
+
+  deleteStudent(id: number) {
+    const student = this.students().find(s => s.id === id);
+    if (!student) return;
+
+    if (confirm(`Delete ${student.firstName}?`)) {
+      this.service.deleteStudentApi(id);
 
       this.messageService.add({
-      severity: 'success',
-      summary: 'Deleted',
-      detail: `${student.name} deleted successfully`,
-      life: 3000
-    });
+        severity: 'success',
+        summary: 'Deleted',
+        detail: `${student.firstName} deleted successfully`,
+        life: 3000
+      });
     }
   }
 
@@ -87,64 +105,68 @@ export class StudentList {
 
     if (confirm(`Delete ${this.selectedStudents.length} student(s)?`)) {
       const ids = this.selectedStudents.map(s => s.id);
-      this.service.deleteStudents(ids);
-      
-      this.messageService.add({
-      severity: 'success',
-      summary: 'Deleted',
-      detail: `${ids.length} deleted successfully`,
-      life: 3000
-    });
-      
+      this.service.deleteStudentsApi(ids);
 
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Deleted',
+        detail: `${ids.length} student(s) deleted successfully`,
+        life: 3000
+      });
       this.selectedStudents = [];
     }
   }
 
-
-  // Status
-  getSeverity(status: string): 'success' | 'danger' | 'info' | 'secondary' {
-    switch (status) {
-      case 'Inactive':
+  // Years
+  getSeverity(year: number): 'success' | 'danger' | 'info' | 'warn' | 'secondary' {
+    switch (year) {
+      case 1:
         return 'danger';
 
-      case 'Active':
+      case 2:
         return 'success';
 
-      case 'Graduated':
+      case 3:
         return 'info';
+
+      case 4:
+        return 'warn';
 
       default:
         return 'secondary';
     }
   }
 
-  //Status
+  //Years
 
-  statusOptions = [
-    { label: 'All Status', value: null },
-    { label: 'Active', value: 'Active' },
-    { label: 'Inactive', value: 'Inactive' },
-    { label: 'Graduated', value: 'Graduated' }
+  yearsOptions = [
+    { label: 'All Years', value: null },
+    { label: 'Year 1', value: '1' },
+    { label: 'Year 2', value: '2' },
+    { label: 'Year 3', value: '3' },
+    { label: 'Year 4', value: '4' },
+    { label: 'Year 5', value: '5' },
   ];
 
-  selectedStatus: string | null = null;
+  selectedYear: number | null = null;
 
-  //Grades
+  //Course
 
-  gradeOptions = [
-    { label: 'All Grades', value: null },
-    { label: '10th', value: '10th' },
-    { label: '11th', value: '11th' },
-    { label: '12th', value: '12th' }
+  courseOptions = [
+    { label: 'All Courses', value: null },
+    { label: 'CS', value: 'CS' },
+    { label: 'IT', value: 'IT' },
+    { label: 'English', value: 'English' },
+    { label: 'Sci', value: 'Sci' },
+    { label: 'ECE', value: 'ECE' }
   ];
 
-  selectedGrade: string | null = null;
+  selectedCourse: string | null = null;
 
   //CSV file
 
   exportCSV() {
-    const data = this.students(); // signal → array
+    const data = this.students();
     if (!data || data.length === 0) return;
 
     const headers = Object.keys(data[0]).join(',');

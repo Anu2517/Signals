@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -16,44 +16,54 @@ import { AuthService } from '../../../services/auth-service';
   styleUrls: ['./signin.css'],
   providers: [MessageService],
 })
-export class Signin {
-   signInForm!: FormGroup;
+export class Signin implements OnInit {
+  loginForm!: FormGroup;
 
   constructor(
     private fb: FormBuilder,
     private auth: AuthService,
     private router: Router,
     private messageService: MessageService
-  ) {
-    this.signInForm = this.fb.group({
+  ) { }
+
+  ngOnInit(): void {
+    this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
+
+    const emailFromSignup = history.state?.email;
+
+    if (emailFromSignup) {
+      this.loginForm.patchValue({
+        email: emailFromSignup
+      });
+    }
   }
 
   get f() {
-    return this.signInForm.controls;
+    return this.loginForm.controls;
   }
 
   login(): void {
-    if (this.signInForm.invalid) {
-      this.signInForm.markAllAsTouched();
+    if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched();
       return;
     }
 
-    const { email, password } = this.signInForm.value;
+    const { email, password } = this.loginForm.value;
 
-    const success = this.auth.signIn(email, password);
-
-    if (success) {
-      this.router.navigate(['/dashboard']);
-    } else {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Login Failed',
-        detail: 'Invalid email or password',
-        life: 3000
-      });
-    }
+    this.auth.login(this.loginForm.value.email, this.loginForm.value.password).subscribe(success => {
+      if (success) {
+        this.router.navigate(['/dashboard']);
+      } else {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Login Failed',
+          detail: 'Invalid email or password',
+          life: 3000
+        });
+      }
+    });
   }
 }

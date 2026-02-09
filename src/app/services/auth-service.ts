@@ -1,10 +1,14 @@
-import { Injectable, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
+import { catchError, map, Observable, of, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
+
+private http = inject(HttpClient);
 
   private usersKey = 'users';
   private loggedInKey = 'isLoggedIn';
@@ -13,17 +17,11 @@ export class AuthService {
   private currentUserSignal = signal<any>(this.getStoredUser());
   user$ = this.currentUserSignal;
 
-  constructor(private router: Router) { }
+  constructor(private router: Router) {}
 
   private getStoredUser() {
     const data = localStorage.getItem(this.currentUserKey);
-    if (!data) return null;
-    
-    const user = JSON.parse(data);
-    if (user && !user.role) {
-      user.role = 'Administrator';
-    }
-    return user;
+    return data ? JSON.parse(data) : null;
   }
 
   signUp(user: any) {
@@ -40,19 +38,34 @@ export class AuthService {
     localStorage.setItem(this.usersKey, JSON.stringify(users));
   }
 
-  signIn(email: string, password: string): boolean {
-    const users = JSON.parse(localStorage.getItem(this.usersKey) || '[]');
-    const validUser = users.find((u: any) => u.email === email && u.password === password);
+  private loginUrl = 'http://192.168.5.13:5078/api/auth/login';
+  login(email: string, password: string): Observable<boolean> {
+      // const body = {
+      //   email: 'yugandhar.reddy@example.com',
+      //   password: 'SecurePass123!'
+      // };  
+    localStorage.removeItem('token');
 
-    if (validUser) {
-      if (!validUser.role) validUser.role = 'Administrator';
+    return this.http.post<any>(this.loginUrl, { email, password }).pipe(
+      tap((res) => {
+        localStorage.setItem('token', res.token);
 
-      localStorage.setItem(this.loggedInKey, 'true');
-      localStorage.setItem(this.currentUserKey, JSON.stringify(validUser));
-      this.currentUserSignal.set(validUser);
-      return true;
-    }
-    return false;
+        const user = {
+          name: res.userName,
+          email: res.email,
+          role: res.role
+        };
+
+        localStorage.setItem(this.loggedInKey, 'true');
+        localStorage.setItem(this.currentUserKey, JSON.stringify(user));
+        this.currentUserSignal.set(user);
+      }),
+      map(() => true),          
+      catchError(err => {
+      console.error('Login failed', err);
+      return of(false);
+      })
+    );
   }
 
   getCurrentUser() {
@@ -63,8 +76,9 @@ export class AuthService {
   logout() {
     localStorage.removeItem(this.loggedInKey);
     localStorage.removeItem(this.currentUserKey);
+    localStorage.removeItem('token');
     this.currentUserSignal.set(null);
-    // this.router.navigate(['/auth']);
+    this.router.navigate(['/auth/login']);
   }
 
   isLoggedIn(): boolean {

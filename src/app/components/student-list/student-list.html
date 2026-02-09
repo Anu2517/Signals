@@ -40,11 +40,8 @@
     [globalFilterFields]="['id','name','email','age','course']"
     [(selection)]="selectedStudents"
     selectionMode="multiple"
-    [virtualScroll]="true"
-    [virtualScrollItemSize]="48"
-    scrollHeight="100vh"
+    scrollHeight="600px"
     [scrollable]='true'
-    
   >
  
     <ng-template pTemplate="caption">
@@ -58,29 +55,29 @@
                 pInputText
                 type="text"
                 [(ngModel)]="globalFilter"
-                (input)="dt.filterGlobal($event.target.value, 'contains')"
+                (input)="onSearchChange($event.target.value)"
                 placeholder="Search Students..."
             />
         </p-iconfield>
 
         <p-select
-          [options]="statusOptions"
-          [(ngModel)]="selectedStatus"
+          [options]="yearsOptions"
+          [(ngModel)]="selectedYear"
           optionLabel="label"
           optionValue="value"
-          placeholder="All Status"
-          (onChange)="dt.filter($event.value, 'status', 'equals')"
-          class="select-status">
+          placeholder="All Years"
+          (onChange)="dt.filter($event.value, 'year', 'equals')"
+          class="select-year">
         </p-select>
 
         <p-select
-          [options]="gradeOptions"
-          [(ngModel)]="selectedGrade"
+          [options]="courseOptions"
+          [(ngModel)]="selectedCourse"
           optionLabel="label"
           optionValue="value"
-          placeholder="All Grades"
-          (onChange)="dt.filter($event.value, 'grade', 'equals')"
-          class="select-grade">
+          placeholder="All Courses"
+          (onChange)="dt.filter($event.value, 'course', 'equals')"
+          class="select-course">
         </p-select>
       </div>
 
@@ -123,8 +120,18 @@
           </ng-container>
         </td>
         <td class="actions-column">
-          <button pButton icon="pi pi-pencil" class="p-button-text p-button-success" (click)="editStudent(student)"></button>
-          <button pButton icon="pi pi-trash" class="p-button-text p-button-danger" (click)="onDelete(student)"></button>
+          <button 
+            pButton 
+            icon="pi pi-pencil" 
+            class="p-button-text p-button-success" 
+            (click)="editStudent(student)">
+          </button>
+          <button 
+            pButton 
+            icon="pi pi-trash" 
+            class="p-button-text p-button-danger" 
+            (click)="deleteStudent(student.id)">
+          </button>
         </td>
       </tr>
     </ng-template>

@@ -1,87 +1,69 @@
-<p-dialog
-  header="Update Student"
-  [visible]="visible()"
-  (visibleChange)="visible.set($event)"
-  [modal]="true"
-  [closable]="true"
-  [style]="{ width: '420px' }"
-  (onHide)="cancel()"
->
+<p-dialog header="Update Student" [visible]="visible()" (visibleChange)="visible.set($event)" [modal]="true"
+  [closable]="true" [style]="{ width: '600px' }" (onHide)="cancel()">
   <div class="p-fluid add-form" *ngIf="student">
 
     <div class="p-field">
       <label for="id">Id</label>
-      <input
-        pInputText
-        id="id"
-        type="number"
-        [(ngModel)]="student.id"
-      />
+      <input pInputText id="id" type="number" [(ngModel)]="student.id" />
     </div>
 
     <div class="p-field">
-      <label for="name">Name</label>
-      <input
-        pInputText
-        id="name"
-        [(ngModel)]="student.name"
-      />
+      <label for="firstName">FirstName</label>
+      <input pInputText id="firstName" [(ngModel)]="student.firstName" />
+    </div>
+
+    <div class="p-field">
+      <label for="lastName">LastName</label>
+      <input pInputText id="lastName" [(ngModel)]="student.lastName" />
     </div>
 
     <div class="p-field">
       <label for="email">Email</label>
-      <input
-        pInputText
-        id="email"
-        [(ngModel)]="student.email"
-      />
+      <input pInputText id="email" [(ngModel)]="student.email" />
     </div>
 
     <div class="p-field">
-      <label for="grade">Grade</label>
-      <input
-        pInputText
-        id="grade"
-        type="text"
-        [(ngModel)]="student.grade"
-      />
+      <label for="age">Age</label>
+      <input pInputText id="age" [(ngModel)]="student.age" />
     </div>
 
     <div class="p-field">
-      <label for="course">Course</label>
-      <input
-        pInputText
-        id="course"
-        [(ngModel)]="student.course"
-      />
+      <label for="course">Course <span class="required">*</span></label>
+      <select class="select" [(ngModel)]="student.course">
+        <option value="">Select Course</option>
+        <option value="CS">CS</option>
+        <option value="IT">IT</option>
+        <option value="English">English</option>
+        <option value="Sci">Sci</option>
+        <option value="ECE">ECE</option>
+      </select>
     </div>
 
     <div class="p-field">
-      <label for="status">Status</label>
-      <input
-        pInputText
-        id="status"
-        [(ngModel)]="student.status"
-      />
+      <label for="year">Year <span class="required">*</span></label>
+      <select class="select" [(ngModel)]="student.year">
+        <option value="1">Select Year</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+      </select>
+    </div>
+
+    <div class="p-field">
+      <label for="rollNumber">Roll No</label>
+      <input pInputText id="rollNumber" [(ngModel)]="student.rollNumber" />
+    </div>
+
+    <div class="p-field enrollment-date">
+      <label for="enrollmentDate">Enrollment Date</label>
+      <input type="date" style="min-width: 210px" pInputText id="enrollmentDate" [(ngModel)]="student.enrollmentDate" />
     </div>
 
     <div class="buttons">
-      <button
-        pButton
-        type="button"
-        label="Cancel"
-        class="p-button-outlined"
-        (click)="cancel()"
-      ></button>
-
-      <button
-        pButton
-        type="button"
-        label="Update"
-        class="p-button-primary"
-        (click)="save()"
-      ></button>
+      <button pButton type="button" label="Cancel" class="btn btn-cancel" (click)="cancel()"></button>
+      <button pButton type="button" label="Update" class="btn btn-save" (click)="save()"></button>
     </div>
-
   </div>
 </p-dialog>
