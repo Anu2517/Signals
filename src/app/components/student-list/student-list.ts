@@ -62,20 +62,27 @@ export class StudentList {
     this.service.openAddDialog();
   }
 
-  // Get student by id
-  onSearchChange(value: string) {
+  // Get student by name,email,course......
+  onSearchChange(value: string, table: any) {
     const trimmed = value.trim();
     if (!trimmed) {
+      table.clear();
       this.service.loadInitialData();
       return;
     }
+    table.filterGlobal(trimmed, 'contains');
+  }
 
-    const id = Number(trimmed);
+  // Get student by id
+  searchById(table: any) {
+    const trimmed = this.globalFilter.trim();
 
-    if (!isNaN(id)) {
-      this.service.getStudentByIdApi(id);
+    if (/^\d+$/.test(trimmed)) {
+      table.clear();
+      this.service.getStudentByIdApi(Number(trimmed));
     }
   }
+
 
   editStudent(student: Student) {
     this.service.openDialog(student.id);

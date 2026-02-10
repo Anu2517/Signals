@@ -4,6 +4,12 @@
   color: var(--text-primary);
 } */
 
+.dashboard-container {
+  height: 100%;
+  overflow-y: auto;
+  padding-right: 20px;
+}
+
 .header {
   margin-bottom: 0;
   color: var(--text-primary);

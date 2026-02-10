@@ -43,10 +43,11 @@
         selectionMode="multiple"
         [virtualScroll]="true"
         [virtualScrollItemSize]="48"
-        scrollHeight="600px"
+        scrollHeight="700px"
         [scrollable]='true'
     >
         <ng-template #caption>
+          <div class="sticky-caption">
             <div class="p-inputgroup">
                 <p-iconfield iconPosition="left">
                   <p-inputicon>
@@ -96,6 +97,7 @@
                 (click)="deleteSelected()">
               </button>
             </div>
+          </div>
         </ng-template>
 
         <ng-template #header>

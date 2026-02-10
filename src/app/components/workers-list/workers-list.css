@@ -37,6 +37,14 @@
   cursor: pointer;
 }
 
+.sticky-caption {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+
 .global-search-input {
     width: 700px;
 }
@@ -64,4 +72,19 @@
 
 .p-button-primary:hover {
   background-color: #2a53c4;
+}
+
+.p-inputtext {
+  background: var(--card-bg);
+  color: var(--text-primary);
+}
+
+.p-select {
+  background: var(--card-bg);
+  color: var(--text-primary);
+}
+
+.p-select-overlay {
+  background: var(--card-bg);
+  color: var(--text-primary);
 }

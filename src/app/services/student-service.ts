@@ -134,7 +134,11 @@ export class StudentService {
     ).subscribe({
       next: updatedStudent => {
         this._students.update(list =>
-          list.map(s => s.id === updatedStudent.id ? updatedStudent : s)
+          list.map(s =>
+            s.id === updatedStudent.id
+              ? { ...s, ...updatedStudent, rollNumber: student.rollNumber }
+              : s
+          )
         );
         this.closeDialog();
       },

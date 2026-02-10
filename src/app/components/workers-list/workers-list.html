@@ -41,45 +41,47 @@
     [globalFilterFields]="['id','name','email','department','experience']"
     [virtualScroll]="true"
     [virtualScrollItemSize]="48"
-    scrollHeight="600px"
+    scrollHeight="700px"
     [scrollable]='true'
   >
  
     <ng-template pTemplate="caption">
-      <div class="p-inputgroup">
-        <p-iconfield iconPosition="left">
+      <div class="sticky-caption">
+        <div class="p-inputgroup">
+          <p-iconfield iconPosition="left">
             <p-inputicon>
-                <i class="pi pi-search"></i>
+                  <i class="pi pi-search"></i>
             </p-inputicon>
-            <input
-            class="global-search-input"
-                pInputText
-                type="text"
-                [(ngModel)]="globalFilter"
-                (input)="dt.filterGlobal($event.target.value, 'contains')"
-                placeholder="Search Workers..."
-            />
-        </p-iconfield>
+              <input
+                  class="global-search-input"
+                  pInputText
+                  type="text"
+                  [(ngModel)]="globalFilter"
+                  (input)="dt.filterGlobal($event.target.value, 'contains')"
+                  placeholder="Search Workers..."
+              />
+          </p-iconfield>
 
-        <p-select
-          [options]="statusOptions"
-          [(ngModel)]="selectedStatus"
-          optionLabel="label"
-          optionValue="value"
-          placeholder="All Status"
-          (onChange)="dt.filter($event.value, 'status', 'equals')"
-          styleClass="w-12rem">
-        </p-select>
+          <p-select
+            [options]="statusOptions"
+            [(ngModel)]="selectedStatus"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="All Status"
+            (onChange)="dt.filter($event.value, 'status', 'equals')"
+            styleClass="w-12rem">
+          </p-select>
 
-        <p-select
-          [options]="departmentOptions"
-          [(ngModel)]="selectedDepartment"
-          optionLabel="label"
-          optionValue="value"
-          placeholder="All Departments"
-          (onChange)="dt.filter($event.value, 'department', 'equals')"
-          style="min-width: 120px">
-        </p-select>
+          <p-select
+              [options]="departmentOptions"
+            [(ngModel)]="selectedDepartment"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="All Departments"
+            (onChange)="dt.filter($event.value, 'department', 'equals')"
+            style="min-width: 120px">
+          </p-select>
+        </div>
       </div>
 
       <div class="selection-bar"

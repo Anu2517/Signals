@@ -19,28 +19,34 @@
 
 .p-inputgroup {
   display: flex;
+  align-items: center;
   gap: 1rem; 
 }
 
+.p-inputgroup p-iconfield {
+  flex: 1;             
+  min-width: 280px;
+}
+
 .search-box input {
-  width: 280px;
+  width: 100%;
+  min-width: 500px;
 }
 
 .card h2 {
   margin-bottom: 1rem;
 }
 
-:host ::ng-deep .student-row:hover {
-  background-color: #f4f8ff; 
-}
-
-:host ::ng-deep .student-row {
-  cursor: pointer;
+.sticky-caption {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
 }
 
 .global-search-input {
-    /* background-color: #1f2937; */
-    width: 700px;
+    width: 100%;
 }
 
 .selection-bar {
@@ -60,14 +66,29 @@
 
 .p-button-primary {
   background-color: #1d4ed8;
+  border-color: #1d4ed8;
   color: white;
   border: none;
 }
 
 .p-button-primary:hover {
-  background-color: #2a53c4;
+  background-color: #426ad6;
+  border-color: #426ad6;
 }
 
+.p-inputtext {
+  background: var(--card-bg);
+  color: var(--text-primary);
+}
 
+.p-select {
+  background: var(--card-bg);
+  color: var(--text-primary);
+}
+
+.p-select-overlay {
+  background: var(--card-bg);
+  color: var(--text-primary);
+}
 
 

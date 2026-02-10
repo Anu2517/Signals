@@ -14,5 +14,6 @@ export const routes: Routes = [
     {path: 'dashboard', component: Dashboard, canActivate: [authGuard], data: { showSidebar: true }},
     {path: 'student-list', component: StudentList, canActivate: [authGuard]},
     {path: 'teachers-list', component: TeachersList, canActivate: [authGuard]},
-    {path: 'workers-list', component: WorkersList, canActivate: [authGuard]}
+    {path: 'workers-list', component: WorkersList, canActivate: [authGuard]},
+    { path: '**', redirectTo: 'student-list' }
 ];
