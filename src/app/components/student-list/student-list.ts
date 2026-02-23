@@ -1,8 +1,7 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Student, StudentService } from '../../services/student-service';
-import { HttpClientModule } from '@angular/common/http';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
@@ -16,20 +15,18 @@ import { AddStudents } from './add-students/add-students';
 import { UpdateStudent } from './update-student/update-student';
 import { Toast } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-student-list',
-  imports: [Toast, CommonModule, FormsModule, HttpClientModule, Select, TableModule, ButtonModule, InputTextModule, InputNumberModule, IconField, Tag, InputIconModule, DialogModule, AddStudents, UpdateStudent],
-  providers: [MessageService],
+  imports: [Toast, CommonModule, FormsModule, Select, TableModule, ButtonModule, InputTextModule, InputNumberModule, IconField, Tag, InputIconModule, DialogModule, AddStudents, UpdateStudent, ProgressSpinnerModule],
   templateUrl: './student-list.html',
   styleUrl: './student-list.css',
 })
 export class StudentList {
 
-  private service = inject(StudentService);
-  constructor(
-    private messageService: MessageService
-  ) { }
+  public service = inject(StudentService);
+  private messageService = inject(MessageService);
 
   title = 'Students';
 
@@ -39,7 +36,7 @@ export class StudentList {
 
   // to add 1000 columns
   columns = computed(() => {
-    const data = this.students(); 
+    const data = this.students();
     if (!data || data.length === 0) return [];
 
     const customWidths: Record<string, string> = {
@@ -54,9 +51,17 @@ export class StudentList {
       field: key,
       header: key.charAt(0).toUpperCase() + key.slice(1),
       width: customWidths[key] || '150px',
-      type: key === 'status' ? 'tag' : 'text'
+      type: key === 'year' ? 'tag' : 'text'
     }));
   });
+
+  trackByField(index: number, col: any): string {
+    return col.field;
+  }
+
+  trackByStudentId(index: number, student: Student): number {
+    return student.id;
+  }
 
   openAddStudent() {
     this.service.openAddDialog();
@@ -67,7 +72,6 @@ export class StudentList {
     const trimmed = value.trim();
     if (!trimmed) {
       table.clear();
-      this.service.loadInitialData();
       return;
     }
     table.filterGlobal(trimmed, 'contains');
@@ -176,20 +180,30 @@ export class StudentList {
     const data = this.students();
     if (!data || data.length === 0) return;
 
-    const headers = Object.keys(data[0]).join(',');
-    const rows = data.map(student =>
-      Object.values(student).join(',')
-    );
+    const headers = Object.keys(data[0]);
+    const csvRows = [
+      headers.join(','), 
+      ...data.map(student =>
+        headers
+          .map(header => {
+            const value = (student as any)[header] ?? '';
+            return `"${String(value).replace(/"/g, '""')}"`;
+          })
+          .join(',')
+      )
+    ];
 
-    const csvContent = [headers, ...rows].join('\n');
-    const blob = new Blob([csvContent], {
+    const blob = new Blob([csvRows.join('\n')], {
       type: 'text/csv;charset=utf-8;'
     });
 
+    const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
+    link.href = url;
     link.download = 'students.csv';
     link.click();
+
+    URL.revokeObjectURL(url);
   }
 
   //JSON File

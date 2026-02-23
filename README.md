@@ -1,6 +1,36 @@
-# DataDisplay
+# 🎓 DataDisplay – Student Management System
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.8.
+This project is a Student Management System built using Angular CLI version 20.3.8.
+
+It allows users to manage student records including adding, editing, deleting, searching, and bulk operations.
+
+---
+
+## 🚀 Features
+
+- Add, Edit, Delete Students
+- Bulk Delete
+- Search & Filter
+- Responsive UI using PrimeNG
+- Accessibility improvements (ARIA labels, proper form labels)
+- Optimized state management using Angular Signals
+
+---
+
+## 📦 Prerequisites
+
+Make sure you have:
+
+- Node.js 18+
+- Angular CLI 20+
+
+Check versions:
+
+```bash
+node -v
+ng version
+
+---
 
 ## Development server
 

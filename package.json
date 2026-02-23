@@ -32,7 +32,6 @@
     "@primeuix/themes": "^2.0.2",
     "chart.js": "^4.5.1",
     "chartjs-plugin-datalabels": "^2.2.0",
-    "cors": "^2.8.6",
     "echarts": "^6.0.0",
     "ngx-echarts": "^20.0.2",
     "primeicons": "^7.0.0",

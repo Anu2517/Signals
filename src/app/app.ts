@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, DOCUMENT, inject, Renderer2, DestroyRef } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
@@ -6,13 +6,13 @@ import { ToggleButtonModule } from 'primeng/togglebutton';
 import { AuthService } from './services/auth-service';
 import { CommonModule } from '@angular/common';
 import { ToastModule } from 'primeng/toast';
-import { HttpClientModule } from '@angular/common/http';
+import { filter } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
-    HttpClientModule,
     CommonModule,
     RouterOutlet,
     RouterLink,
@@ -30,16 +30,14 @@ export class App {
   isDark = false;
   showSidebar = false;
 
-  constructor(private router: Router, private route: ActivatedRoute, public auth: AuthService) {
-    this.router.events.subscribe(event => {
-      if (event instanceof NavigationEnd) {
-        const currentRoute = this.getChild(this.router.routerState.root);
-        this.showSidebar = currentRoute.snapshot.data['showSidebar'] ?? true;
-      }
-    });
-  }
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  public auth = inject(AuthService);
+  private renderer = inject(Renderer2);
+  private document = inject(DOCUMENT);
+  private destroyRef = inject(DestroyRef);
 
-  getChild(route: any): any {
+  getChild(route: ActivatedRoute): ActivatedRoute {
     while (route.firstChild) {
       route = route.firstChild;
     }
@@ -47,6 +45,13 @@ export class App {
   }
 
   ngOnInit(): void {
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd), takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        const currentRoute = this.getChild(this.router.routerState.root);
+        this.showSidebar = currentRoute.snapshot.data['showSidebar'] ?? true;
+      });
+
     this.updateSidebarVisibility();
 
     const savedTheme = localStorage.getItem('theme');
@@ -70,21 +75,21 @@ export class App {
   }
 
   private applyTheme(): void {
-  const htmlElement = document.documentElement;
-  if (this.isDark) {
-    htmlElement.classList.add('p-dark');
-    document.body.classList.add('p-dark'); 
-  } else {
-    htmlElement.classList.remove('p-dark');
-    document.body.classList.remove('p-dark');
+    const htmlElement = this.document.documentElement;
+    const bodyElement = this.document.body;
+    
+    if (this.isDark) {
+      this.renderer.addClass(htmlElement, 'p-dark');
+      this.renderer.addClass(bodyElement, 'p-dark');
+    } else {
+      this.renderer.removeClass(htmlElement, 'p-dark');
+      this.renderer.removeClass(bodyElement, 'p-dark');
+    }
   }
-}
 
 
-logout(): void {
-  this.auth.logout();
-    // localStorage.removeItem('token');
-    this.router.navigate(['/signin']);
-}
+  logout(): void {
+    this.auth.logout();
+  }
 
 }

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Output } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
@@ -58,7 +58,7 @@ export class AddStudents {
       : new Date()
   };
 
-  this.service.addStudent(payload);
+  this.service.addStudentApi(payload);
 }
 
 

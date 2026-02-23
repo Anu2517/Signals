@@ -2,7 +2,6 @@ import { Component, inject, signal } from '@angular/core';
 import { WorkerService, Worker } from '../../services/worker-service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
 import { TableModule, TablePageEvent } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
@@ -20,7 +19,7 @@ import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-workers-list',
-  imports: [Toast, Select, CommonModule, FormsModule, HttpClientModule, TableModule, ButtonModule, InputTextModule, InputNumberModule, IconField, Tag, InputIconModule, DialogModule, AddWorkers, UpdateWorkers],
+  imports: [Toast, Select, CommonModule, FormsModule, TableModule, ButtonModule, InputTextModule, InputNumberModule, IconField, Tag, InputIconModule, DialogModule, AddWorkers, UpdateWorkers],
   providers: [MessageService],
   templateUrl: './workers-list.html',
   styleUrl: './workers-list.css',
@@ -28,10 +27,7 @@ import { MessageService } from 'primeng/api';
 export class WorkersList {
 
   private service = inject(WorkerService);
-
-  constructor(
-    private messageService: MessageService
-  ) {}
+  private messageService = inject(MessageService);
 
   title = 'Workers';
 

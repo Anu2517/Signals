@@ -27,11 +27,7 @@ import { Toast } from 'primeng/toast';
 export class TeachersList {
 
   private service = inject(TeacherService);
-
-  constructor(
-    private messageService: MessageService
-  ) {}
-
+  private messageService = inject(MessageService);
 
   title = 'Teachers';
 

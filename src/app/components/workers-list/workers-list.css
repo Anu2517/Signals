@@ -18,11 +18,19 @@
 
 .p-inputgroup {
   display: flex;
+  align-items: center;
   gap: 1rem; 
 }
 
+.p-inputgroup p-iconfield {
+  flex: 1;             
+  min-width: 280px;
+}
+
+
 .search-box input {
-  width: 280px;
+  width: 100%;
+  min-width: 500px;
 }
 
 .card h2 {
@@ -46,7 +54,7 @@
 }
 
 .global-search-input {
-    width: 700px;
+    width: 100%;
 }
 
 .selection-bar {

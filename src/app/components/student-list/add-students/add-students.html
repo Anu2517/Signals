@@ -1,12 +1,12 @@
 <p-dialog header="Add student" [(visible)]="display" [modal]="true" [style]="{width: '600px'}" [baseZIndex]="10000">
   <div class="p-fluid add-form">
     <div class="p-field">
-      <label>First Name <span class="required">*</span></label>
+      <label for="fristName">First Name <span class="required">*</span></label>
       <input pInputText [(ngModel)]="student.firstName" />
     </div>
 
     <div class="p-field">
-      <label>Last Name <span class="required">*</span></label>
+      <label for="lastName">Last Name <span class="required">*</span></label>
       <input pInputText [(ngModel)]="student.lastName" />
     </div>
 
@@ -16,12 +16,12 @@
     </div>
 
     <div class="p-field">
-      <label>Age</label>
+      <label for="age">Age</label>
       <input pInputText type="number" [(ngModel)]="student.age" />
     </div>
 
     <div class="p-field">
-      <label>Roll No <span class="required">*</span></label>
+      <label for="rollNumber">Roll No <span class="required">*</span></label>
       <input pInputText [(ngModel)]="student.rollNumber" />
     </div>
 
@@ -50,30 +50,30 @@
     </div>
 
     <div class="p-field">
-      <label>Enrollment Date <span class="required">*</span></label>
+      <label for="enrollmentDate">Enrollment Date <span class="required">*</span></label>
       <input type="date" class="select" [(ngModel)]="student.enrollmentDate" />
     </div>
 
     <div class="p-field">
-      <label>Phone</label>
+      <label for="phone">Phone</label>
       <input pInputText [(ngModel)]="phone" />
     </div>
 
     <div class="p-field">
-      <label>Guardian Name <span class="required">*</span></label>
+      <label for="guardianName">Guardian Name <span class="required">*</span></label>
       <input pInputText [(ngModel)]="guardianName" />
     </div>
   </div>
 
   <div class="address-field">
-    <label>Address <span class="required">*</span></label>
+    <label for="address">Address <span class="required">*</span></label>
     <textarea class="address" rows="4" [(ngModel)]="address">
       </textarea>
   </div>
 
   <div class="buttons">
-    <button class="btn btn-cancel" (click)="cancel()">Cancel</button>
-    <button class="btn btn-add" (click)="add()">Add</button>
+    <button class="btn btn-cancel" (click)="cancel()" aria-label="Cancel and close dialog">Cancel</button>
+    <button class="btn btn-add" (click)="add()"  aria-label="Add student">Add</button>
   </div>
 
 </p-dialog>

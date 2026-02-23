@@ -46,7 +46,7 @@ export class Dashboard implements OnInit, OnDestroy {
   });
 
   // Calculations of studnets
-  totalStudents = computed(() => 
+  totalStudents = computed(() =>
     this.studentService.students().length);
 
   activeStudents = computed(() => {
@@ -60,32 +60,53 @@ export class Dashboard implements OnInit, OnDestroy {
       !s.enrollmentDate || isNaN(new Date(s.enrollmentDate).getTime())
     ).length;
   });
-  
+
+ /**
+  * Calculates the percentage growth of student enrollments 
+  * comparing the current calendar year with the previous year.
+  *
+  * Formula: Math.round(((current - previous) / previous) * 100)
+  *
+  * Edge Cases:
+  * - No students in data: returns 0
+  * - No students in current or previous year: returns 0
+  * - Students in current year but zero in previous: returns 100 (infinite growth cap)
+  *
+  * @returns {number} Rounded growth percentage.
+  */
+
   studentGrowthPercent = computed(() => {
     const students = this.studentService.students();
-    if (students.length === 0) return 0;
- 
+    if (!students.length) return 0;
+
     const currentYear = new Date().getFullYear();
     const lastYear = currentYear - 1;
- 
-    const currentCount = students.filter(s => new Date(s.enrollmentDate).getFullYear() === currentYear).length;
-    const previousCount = students.filter(s => new Date(s.enrollmentDate).getFullYear() === lastYear).length;
- 
-    if (currentCount === 0 && previousCount > 0) {
-      return Math.round(((currentCount - previousCount) / previousCount) * 100);
+
+    let currentCount = 0;
+    let previousCount = 0;
+
+    for (const s of students) {
+      if (!s.enrollmentDate) continue;
+
+      const year = new Date(s.enrollmentDate).getFullYear();
+
+      if (year === currentYear) currentCount++;
+      else if (year === lastYear) previousCount++;
     }
- 
-    if (previousCount === 0)
+
+    if (previousCount === 0) {
       return currentCount > 0 ? 100 : 0;
- 
+    }
+
     return Math.round(((currentCount - previousCount) / previousCount) * 100);
   });
 
+
   // Calculations of teachers
-  totalTeachers = computed(() => 
+  totalTeachers = computed(() =>
     this.teacherService.teachers().length);
 
-  totalWorkers = computed(() => 
+  totalWorkers = computed(() =>
     this.workerService.workers().length);
 
   totalStaff = computed(() => this.totalTeachers() + this.totalWorkers());
@@ -110,63 +131,69 @@ export class Dashboard implements OnInit, OnDestroy {
 
   //Line Chart
 
+  /**
+ * Generates ECharts configuration for monthly enrollment line chart.
+ *
+ * Reactively updates when student data or theme changes.
+ */
+
   enrollmentOption = computed(() => {
     const students = this.studentService.students();
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-      const counts = months.map((_, i) =>
-    students.filter(s => {
-      if (!s.enrollmentDate) return false;
- 
-      const d = new Date(s.enrollmentDate);
-      return !isNaN(d.getTime()) && d.getMonth() === i;
-    }).length
-  );
+    const counts = months.map((_, i) =>
+      students.filter(s => {
+        if (!s.enrollmentDate) return false;
+
+        const d = new Date(s.enrollmentDate);
+        return !isNaN(d.getTime()) && d.getMonth() === i;
+      }).length
+    );
 
     const colors = this.chartColors();
 
     return {
       tooltip: {
-      trigger: 'axis'
-    },
-    xAxis: {
-      type: 'category',
-      data: months,
-      axisLabel: {
-        interval: 0,
-        color: colors.text
-      }
-    },
-    yAxis: {
-      type: 'value',
-      min: 0,
-      // max: 10,
-      // interval: 1,
-      axisLabel: {
-        color: colors.text
+        trigger: 'axis'
       },
-      splitLine: {
-        lineStyle: {
-          color: colors.grid
+      xAxis: {
+        type: 'category',
+        data: months,
+        axisLabel: {
+          interval: 0,
+          color: colors.text
         }
-      }
-    },
-    series: [
-      {
-        name: 'Enrollment',
-        type: 'line',
-        data: counts,
-        smooth: true,
-        symbol: 'circle',
-        symbolSize: 6,
-        lineStyle: {
-          color: '#3b82f6',
-          width: 3
+      },
+      yAxis: {
+        type: 'value',
+        min: 0,
+        // max: 10,
+        // interval: 1,
+        axisLabel: {
+          color: colors.text
         },
-        itemStyle: {
-          color: '#3b82f6'
+        splitLine: {
+          lineStyle: {
+            color: colors.grid
+          }
         }
-      }
-    ]
+      },
+      series: [
+        {
+          name: 'Enrollment',
+          type: 'line',
+          data: counts,
+          smooth: true,
+          symbol: 'circle',
+          symbolSize: 6,
+          lineStyle: {
+            color: '#3b82f6',
+            width: 3
+          },
+          itemStyle: {
+            color: '#3b82f6'
+          }
+        }
+      ]
     };
   });
 
@@ -191,7 +218,7 @@ export class Dashboard implements OnInit, OnDestroy {
         data: courses,
         axisLabel: {
           color: colors.text,
-          interval: 0    
+          interval: 0
         }
       },
       yAxis: {
@@ -242,27 +269,27 @@ export class Dashboard implements OnInit, OnDestroy {
       itemStyle: { color: palette[i % palette.length] }
     }));
 
-  return {
-    tooltip: { trigger: 'item' },
-    legend: {
-      orient: 'vertical',
-      left: 'left',
-      textStyle: { color: colors.text }
-    },
-    series: [
-      {
-        name: 'Students',
-        type: 'pie',
-        radius: '65%',
-        data,
-        label: { color: colors.text },
-        itemStyle: {
-          borderColor: colors.border,
-          borderWidth: 2
+    return {
+      tooltip: { trigger: 'item' },
+      legend: {
+        orient: 'vertical',
+        left: 'left',
+        textStyle: { color: colors.text }
+      },
+      series: [
+        {
+          name: 'Students',
+          type: 'pie',
+          radius: '65%',
+          data,
+          label: { color: colors.text },
+          itemStyle: {
+            borderColor: colors.border,
+            borderWidth: 2
+          }
         }
-      }
-    ]
-  };
+      ]
+    };
   });
 
   // Bar Chart
@@ -275,73 +302,92 @@ export class Dashboard implements OnInit, OnDestroy {
     const colors = this.chartColors();
 
     return {
-       tooltip: {
-      trigger: 'axis'
-    },
-    legend: {
-      data: ['Teachers', 'Students'],
-      textStyle: {
-        color: colors.text
-      }
-    },
-    xAxis: {
-      type: 'category',
-      data: depts,
-      axisLabel: {
-        interval: 0,
-        color: colors.text
-      }
-    },
-    yAxis: {
-      type: 'value',
-      axisLabel: {
-        color: colors.text
+      tooltip: {
+        trigger: 'axis'
       },
-      splitLine: {
-        lineStyle: {
-          color: colors.grid
-        }
-      }
-    },
-    series: [
-      {
-        name: 'Teachers',
-        type: 'bar',
-        data: depts.map(d =>
-          teachers.filter(t => t.department === d).length
-        ),
-        itemStyle: {
-          color: '#10b981',
-          borderRadius: [4, 4, 0, 0]
+      legend: {
+        data: ['Teachers', 'Students'],
+        textStyle: {
+          color: colors.text
         }
       },
-      {
-        name: 'Students',
-        type: 'bar',
-        data: depts.map(d =>
-          students.filter(s => s.course === d).length
-        ),
-        itemStyle: {
-          color: '#3b82f6',
-          borderRadius: [4, 4, 0, 0]
+      xAxis: {
+        type: 'category',
+        data: depts,
+        axisLabel: {
+          interval: 0,
+          color: colors.text
         }
-      }
-    ]
+      },
+      yAxis: {
+        type: 'value',
+        axisLabel: {
+          color: colors.text
+        },
+        splitLine: {
+          lineStyle: {
+            color: colors.grid
+          }
+        }
+      },
+      series: [
+        {
+          name: 'Teachers',
+          type: 'bar',
+          data: depts.map(d =>
+            teachers.filter(t => t.department === d).length
+          ),
+          itemStyle: {
+            color: '#10b981',
+            borderRadius: [4, 4, 0, 0]
+          }
+        },
+        {
+          name: 'Students',
+          type: 'bar',
+          data: depts.map(d =>
+            students.filter(s => s.course === d).length
+          ),
+          itemStyle: {
+            color: '#3b82f6',
+            borderRadius: [4, 4, 0, 0]
+          }
+        }
+      ]
     };
   });
-  
+
   // --- Summary Calculations ---
 
-  avgStudentsPerTeacher = computed(() => 
+  /**
+ * Calculates average number of students per teacher.
+ *
+ * @returns {string} Average formatted to 2 decimal places.
+ */
+
+  avgStudentsPerTeacher = computed(() =>
     this.totalTeachers() === 0 ? '0' :
-   (this.totalStudents() / this.totalTeachers()).toFixed(2));
- 
+      (this.totalStudents() / this.totalTeachers()).toFixed(2));
+
+  /**
+* Calculates student retention rate.
+* Retention = (Active Students / Total Students) * 100
+*
+* @returns {number} Retention percentage.
+*/
+
   studentRetentionRate = computed(() => {
     const total = this.totalStudents();
     if (total === 0) return 0;
     const active = this.activeStudents();
     return Math.round((active / total) * 100);
   });
+
+  /**
+ * Calculates staff to student ratio in format 1:X
+ *
+ * @returns {string} Ratio string (e.g., "1:25")
+ */
 
   staffToStudentRatio = computed(() => {
     const staff = this.totalStaff();

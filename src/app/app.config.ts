@@ -1,14 +1,15 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, ErrorHandler, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { provideAnimations } from '@angular/platform-browser/animations';
 import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeuix/themes/aura';
 import { MessageService } from 'primeng/api';
 import { provideEchartsCore } from 'ngx-echarts';
 import * as echarts from 'echarts';
 import { authInterceptor } from './interceptors/auth-interceptor';
+import { GlobalErrorHandler } from './services/global-error-handler';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -19,7 +20,7 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideAnimationsAsync(),
+    provideAnimations(),
     providePrimeNG({
       theme: {
         preset: Aura,
@@ -31,8 +32,8 @@ export const appConfig: ApplicationConfig = {
     }),
     provideEchartsCore({
       echarts
-    })
-
+    }),
+    { provide: ErrorHandler, useClass: GlobalErrorHandler }
 
   ]
 };

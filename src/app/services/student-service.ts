@@ -1,5 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
+import { environment } from '../environments/environment';
+import { forkJoin, of } from 'rxjs';
+import { catchError, finalize } from 'rxjs/operators';
+import { ErrorhandlerService } from './errorhandler-service';
+import { DomSanitizer } from '@angular/platform-browser';
+import { SecurityContext } from '@angular/core';
+import { CreateStudentDto } from '../models/student.dto';
+import { MessageService } from 'primeng/api';
 
 export interface Student {
   id: number;
@@ -11,6 +19,11 @@ export interface Student {
   year: number;
   rollNumber: string;
   enrollmentDate: Date;
+  phone?: string;
+  guardianName?: string;
+  address?: string;
+
+  [key: string]: any;
 }
 
 @Injectable({
@@ -18,16 +31,23 @@ export interface Student {
 })
 export class StudentService {
   private http = inject(HttpClient);
-  // private apiUrl = 'http://localhost:4001/students';
-  private GetAllStudentsUrl = 'http://192.168.5.13:5078/api/students'
+  private sanitizer = inject(DomSanitizer);
+  private errorHandler = inject(ErrorhandlerService);
+  private messageService = inject(MessageService);
+
+  private GetAllStudentsUrl = `${environment.apiUrl}/students`;
 
   private _students = signal<Student[]>([]);
+  private _loading = signal(false);
+  private _error = signal<string | null>(null);
+
+  readonly students = this._students.asReadonly();
+  readonly loading = this._loading.asReadonly();
+  readonly error = this._error.asReadonly();
 
   dialogVisible = signal(false);
   addDialogVisible = signal(false);
   selectedStudentId = signal<number | null>(null);
-
-  readonly students = this._students.asReadonly();
 
   readonly totalStudents = computed(() => this._students().length);
 
@@ -39,158 +59,159 @@ export class StudentService {
     this.loadInitialData();
   }
 
-  // private getAuthHeaders(): HttpHeaders | null {
-  //   const token = localStorage.getItem('token');
-
-  //   if (!token) {
-  //     console.error('No token found');
-  //     return null;
-  //   }
-
-  //   return new HttpHeaders({
-  //     Authorization: `Bearer ${token}`,
-  //     'Content-Type': 'application/json'
-  //   });
-  // }
+  sanitizeInput(value: string): string {
+    return this.sanitizer.sanitize(SecurityContext.HTML, value) ?? '';
+  }
 
   // Get all the students
   loadInitialData(): void {
-    // const headers = this.getAuthHeaders();
-    // if (!headers) return;
+    this._loading.set(true);
+    this._error.set(null);
 
-    this.http.get<Student[]>(this.GetAllStudentsUrl).subscribe({
-      next: students => {
-        this._students.set(students);
-      },
-      error: err => {
-        console.error('Failed loading students', err);
-      }
-    });
+    this.http.get<Student[]>(this.GetAllStudentsUrl)
+      .pipe(
+        finalize(() => this._loading.set(false))
+      )
+      .subscribe({
+        next: students => {
+          this._students.set(
+            students.map(s => ({
+              ...s,
+              fullName: `${s.firstName} ${s.lastName}`
+            }))
+          );
+        },
+
+        error: err => {
+          this._error.set('Failed to load students');
+          console.error(err);
+        }
+      });
   }
 
   //Get student by ID
-
   getStudentByIdApi(id: number): void {
-    // const headers = this.getAuthHeaders();
-    // if (!headers) return;
-
     this.http.get<Student>(`${this.GetAllStudentsUrl}/${id}`).subscribe({
       next: student => {
-        this._students.set([student]);
+        this._students.set([{
+          ...student,
+          fullName: `${student.firstName} ${student.lastName}`
+        }] as any);
         this.selectedStudentId.set(student.id);
       },
-      error: err => {
-        console.error(`Failed loading student with id ${id}`, err);
-        this._students.set([]);
-      }
+      error: err =>
+        this.errorHandler.handleError(err, `Failed to load student with id ${id}`)
     });
   }
 
   // Adds a new Student
-
-  addStudent(student: Student): void {
-    // const headers = this.getAuthHeaders();
-    // if (!headers) return;
-
+  addStudentApi(student: Student): void {
     const { id, ...newStudent } = student;
 
-    const apiPayload: any = {
-      ...newStudent,
-      RollNumber: newStudent.rollNumber,
-      enrollmentDate: new Date(newStudent.enrollmentDate).toISOString()
-    };
-
-    this.http.post<Student>(this.GetAllStudentsUrl, apiPayload)
+    const dto = CreateStudentDto.fromStudent(student, (val) => this.sanitizeInput(val));
+    this.http.post<Student>(this.GetAllStudentsUrl, dto)
       .subscribe({
         next: createdStudent => {
-          this._students.update(list => [...list, createdStudent]);
+          this._students.update(list => {
+            const studentWithFullName = {
+              ...createdStudent,
+              fullName: `${createdStudent.firstName} ${createdStudent.lastName}`
+            };
+            return [...list, studentWithFullName];
+          });
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Confirmed',
+            detail: 'Student added successfully'
+          });
           this.closeAddDialog();
         },
-        error: err => {
-          const message =
-            err?.error?.message ??
-            'Failed to add student';
-
-          alert(message);
-          console.error('Add student failed:', err);
-        }
+        error: err =>
+          this.errorHandler.handleError(err, 'Failed to add student')
       });
   }
 
   // UPDATE student
   updateStudentApi(student: Student): void {
-    // const headers = this.getAuthHeaders();
-    // if (!headers) return;
-
-    const apiPayload: any = {
-      ...student,
-      RollNumber: student.rollNumber,
-      enrollmentDate: new Date(student.enrollmentDate).toISOString()
-    };
-
+    const dto = CreateStudentDto.fromStudent(student, (val) => this.sanitizeInput(val));
     this.http.put<Student>(
       `${this.GetAllStudentsUrl}/${student.id}`,
-      apiPayload
+      dto
     ).subscribe({
       next: updatedStudent => {
         this._students.update(list =>
           list.map(s =>
             s.id === updatedStudent.id
-              ? { ...s, ...updatedStudent, rollNumber: student.rollNumber }
+              ? {
+                ...updatedStudent,
+                rollNumber: student.rollNumber,
+                fullName: `${updatedStudent.firstName} ${updatedStudent.lastName}`
+              }
               : s
           )
         );
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Confirmed',
+          detail: 'Student updated successfully'
+        });
         this.closeDialog();
       },
-      error: err => {
-        alert(err?.error?.message ?? 'Failed to update student');
-        console.error('Update student failed:', err);
-      }
+      error: err =>
+        this.errorHandler.handleError(err, 'Failed to update student')
     });
   }
 
   //delete single student
-
   deleteStudentApi(id: number): void {
-  // const headers = this.getAuthHeaders();
-  // if (!headers) return;
-
-  this.http
-    .delete(`${this.GetAllStudentsUrl}/${id}`)
-    .subscribe({
-      next: () => {
-        this._students.update(list =>
-          list.filter(s => s.id !== id)
-        );
-      },
-      error: err => {
-        alert(err?.error?.message ?? 'Failed to delete student');
-        console.error('Delete student failed:', err);
-      }
-    });
-}
-
-  //delete multiple students
-
-  deleteStudentsApi(ids: number[]): void {
-    ids.forEach(id => this.deleteStudentApi(id));
+    this.http
+      .delete(`${this.GetAllStudentsUrl}/${id}`)
+      .subscribe({
+        next: () => {
+          this._students.update(list =>
+            list.filter(s => s.id !== id)
+          );
+        },
+        error: err =>
+          this.errorHandler.handleError(err, 'Failed to delete student')
+      });
   }
 
-  openDialog(id: number) {
+  //delete multiple students
+  deleteStudentsApi(ids: number[]): void {
+    if (!ids.length) return;
+    const deleteRequests = ids.map(id =>
+      this.http.delete(`${this.GetAllStudentsUrl}/${id}`)
+        .pipe(
+          catchError(err => {
+            this.errorHandler.handleError(err, `Failed to delete student with id ${id}`);
+            return of(null);
+          })
+        )
+    );
+
+    forkJoin(deleteRequests).subscribe(() => {
+      this._students.update(list =>
+        list.filter(s => !ids.includes(s.id))
+      );
+    });
+  }
+
+  openDialog(id: number): void {
     this.selectedStudentId.set(id);
     this.dialogVisible.set(true);
   }
 
-  closeDialog() {
+  closeDialog(): void {
     this.dialogVisible.set(false);
     this.selectedStudentId.set(null);
   }
 
-  openAddDialog() {
+  openAddDialog(): void {
     this.addDialogVisible.set(true);
   }
 
-  closeAddDialog() {
+  closeAddDialog(): void {
     this.addDialogVisible.set(false);
   }
 

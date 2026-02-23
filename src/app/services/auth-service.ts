@@ -1,52 +1,46 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { catchError, map, Observable, of, tap } from 'rxjs';
+import { catchError, map, of, tap } from 'rxjs';
+import { environment } from '../environments/environment';
+
+export interface User {
+  name: string;
+  email: string;
+  role: string;
+  userName?: string;
+  fullName?: string;
+  password?: string;
+  age?: number;
+  phoneNumber?: string;
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
+  private http = inject(HttpClient);
+  private router = inject(Router);
 
-private http = inject(HttpClient);
-
-  private usersKey = 'users';
+  private baseUrl = `${environment.apiUrl}/auth`;
   private loggedInKey = 'isLoggedIn';
   private currentUserKey = 'currentUser';
 
-  private currentUserSignal = signal<any>(this.getStoredUser());
+  private currentUserSignal = signal<User | null>(this.getStoredUser());
   user$ = this.currentUserSignal;
-
-  constructor(private router: Router) {}
 
   private getStoredUser() {
     const data = localStorage.getItem(this.currentUserKey);
     return data ? JSON.parse(data) : null;
   }
 
-  signUp(user: any) {
-    const users = JSON.parse(localStorage.getItem(this.usersKey) || '[]');
-
-    const newUser = {
-      name: user.name,
-      email: user.email,
-      password: user.password,
-      role: 'Administrator'
-    };
-
-    users.push(newUser);
-    localStorage.setItem(this.usersKey, JSON.stringify(users));
+  signUp(user: User) {
+    return this.http.post<any>(`${this.baseUrl}/register`, user)
   }
 
-  private loginUrl = 'http://192.168.5.13:5078/api/auth/login';
-  login(email: string, password: string): Observable<boolean> {
-      // const body = {
-      //   email: 'yugandhar.reddy@example.com',
-      //   password: 'SecurePass123!'
-      // };  
-    localStorage.removeItem('token');
+  login(email: string, password: string) {
 
-    return this.http.post<any>(this.loginUrl, { email, password }).pipe(
+    return this.http.post<{ token: string; userName: string; email: string; role: string }>(`${this.baseUrl}/login`, { email, password }).pipe(
       tap((res) => {
         localStorage.setItem('token', res.token);
 
@@ -60,15 +54,15 @@ private http = inject(HttpClient);
         localStorage.setItem(this.currentUserKey, JSON.stringify(user));
         this.currentUserSignal.set(user);
       }),
-      map(() => true),          
+      map(() => true),
       catchError(err => {
-      console.error('Login failed', err);
-      return of(false);
+        console.error('Login failed', err);
+        return of(false);
       })
     );
   }
 
-  getCurrentUser() {
+  getCurrentUser(): User | null {
     return this.currentUserSignal();
   }
 
@@ -78,7 +72,7 @@ private http = inject(HttpClient);
     localStorage.removeItem(this.currentUserKey);
     localStorage.removeItem('token');
     this.currentUserSignal.set(null);
-    this.router.navigate(['/auth/login']);
+    this.router.navigate(['/signin']);
   }
 
   isLoggedIn(): boolean {

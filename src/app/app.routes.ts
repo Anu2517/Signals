@@ -1,19 +1,53 @@
 import { Routes } from '@angular/router';
-import { StudentList } from './components/student-list/student-list';
-import { TeachersList } from './components/teachers-list/teachers-list';
-import { WorkersList } from './components/workers-list/workers-list';
-import { Dashboard } from './components/dashboard/dashboard';
-import { Signin } from './components/auth/signin/signin';
-import { Signup } from './components/auth/signup/signup';
 import { authGuard } from './guards/auth-guard';
 
 export const routes: Routes = [
-    {path: '', redirectTo: 'signin', pathMatch: 'full'},
-    {path: 'signin', component: Signin, data: { showSidebar: false }},
-    {path: 'signup', component: Signup, data: { showSidebar: false }},
-    {path: 'dashboard', component: Dashboard, canActivate: [authGuard], data: { showSidebar: true }},
-    {path: 'student-list', component: StudentList, canActivate: [authGuard]},
-    {path: 'teachers-list', component: TeachersList, canActivate: [authGuard]},
-    {path: 'workers-list', component: WorkersList, canActivate: [authGuard]},
-    { path: '**', redirectTo: 'student-list' }
+    { path: '', redirectTo: 'signin', pathMatch: 'full' },
+    {
+        path: 'signin',
+        loadComponent: () =>
+            import('./components/auth/signin/signin')
+                .then(m => m.Signin),
+        data: { showSidebar: false }
+    },
+    {
+        path: 'signup',
+        loadComponent: () =>
+            import('./components/auth/signup/signup')
+                .then(m => m.Signup),
+        data: { showSidebar: false }
+    },
+    {
+    path: 'dashboard',
+    loadComponent: () =>
+      import('./components/dashboard/dashboard')
+        .then(m => m.Dashboard),
+    canActivate: [authGuard],
+    data: { showSidebar: true }
+  },
+
+  {
+    path: 'student-list',
+    loadComponent: () =>
+      import('./components/student-list/student-list')
+        .then(m => m.StudentList),
+    canActivate: [authGuard]
+  },
+
+  {
+    path: 'teachers-list',
+    loadComponent: () =>
+      import('./components/teachers-list/teachers-list')
+        .then(m => m.TeachersList),
+    canActivate: [authGuard]
+  },
+
+  {
+    path: 'workers-list',
+    loadComponent: () =>
+      import('./components/workers-list/workers-list')
+        .then(m => m.WorkersList),
+    canActivate: [authGuard]
+  },
+  { path: '**', redirectTo: 'signin' }
 ];

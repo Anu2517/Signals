@@ -2,13 +2,31 @@
   <div class="header-section">
     <h2>{{ title }}</h2>
 
-    <button pButton icon="pi pi-download" label="Export CSV" class="p-button-success" (click)="exportCSV()">
+    <button 
+      pButton 
+      icon="pi pi-download" 
+      label="Export CSV" 
+      class="p-button-success" 
+      aria-label="Export students as CSV"
+      (click)="exportCSV()">
     </button>
 
-    <button pButton icon="pi pi-download" label="Export JSON" class="p-button-help" (click)="exportJSON()">
+    <button 
+      pButton 
+      icon="pi pi-download" 
+      label="Export JSON" 
+      class="p-button-help" 
+      aria-label="Export students as JSON"
+      (click)="exportJSON()">
     </button>
 
-    <button pButton type="button" icon="pi pi-plus" label="Add Student" class="p-button-primary"
+    <button 
+      pButton 
+      type="button" 
+      icon="pi pi-plus" 
+      label="Add Student" 
+      class="p-button-primary custom-btn"
+      aria-label="Open add student dialog"
       (click)="openAddStudent()">
     </button>
   </div>
@@ -18,9 +36,17 @@
     <p-toast [breakpoints]="{ '920px': { width: '100%', right: '0', left: '0' } }" />
   </div>
 
-  <p-table #dt [value]="students()" dataKey="id"
-    [globalFilterFields]="['id','firstName', 'lastName', 'email','age','course', 'year', 'rollNumber']"
-    [(selection)]="selectedStudents" selectionMode="multiple" scrollHeight="700px" [scrollable]='true'>
+  <p-progressSpinner *ngIf="service.loading()"></p-progressSpinner>
+
+  <p-table #dt *ngIf="!service.loading()"
+    [value]="students()" 
+    dataKey="id"
+    [globalFilterFields]="['id','fullName', 'email','age','course', 'year', 'rollNumber']"
+    [(selection)]="selectedStudents" 
+    selectionMode="multiple" 
+    scrollHeight="600px" 
+    [scrollable]='true'
+  >
 
     <ng-template pTemplate="caption">
       <div class="sticky-caption">
@@ -29,24 +55,45 @@
             <p-inputicon>
               <i class="pi pi-search"></i>
             </p-inputicon>
-            <input class="global-search-input" pInputText type="text" [(ngModel)]="globalFilter"
-              (input)="onSearchChange($event.target.value, dt)" (keydown.enter)="searchById(dt)"
-              placeholder="Search Students..." />
+            <input class="global-search-input" 
+              pInputText type="text"
+              [(ngModel)]="globalFilter"
+              (input)="onSearchChange($event.target.value, dt)" 
+              (keydown.enter)="searchById(dt)"
+              placeholder="Search Students..." 
+            />
           </p-iconfield>
 
-          <p-select [options]="yearsOptions" [(ngModel)]="selectedYear" optionLabel="label" optionValue="value"
-            placeholder="All Years" (onChange)="dt.filter($event.value, 'year', 'equals')" class="select-year">
+          <p-select 
+            [options]="yearsOptions" 
+            [(ngModel)]="selectedYear" 
+            optionLabel="label" 
+            optionValue="value"
+            placeholder="All Years" 
+            (onChange)="dt.filter($event.value, 'year', 'equals')" 
+            class="select-year">
           </p-select>
 
-          <p-select [options]="courseOptions" [(ngModel)]="selectedCourse" optionLabel="label" optionValue="value"
-            placeholder="All Courses" (onChange)="dt.filter($event.value, 'course', 'equals')" class="select-course">
+          <p-select 
+            [options]="courseOptions" 
+            [(ngModel)]="selectedCourse" 
+            optionLabel="label" 
+            optionValue="value"
+            placeholder="All Courses" 
+            (onChange)="dt.filter($event.value, 'course', 'equals')" 
+            class="select-course">
           </p-select>
         </div>
 
         <div class="selection-bar" *ngIf="selectedStudents.length > 0">
-          <span>{{ selectedStudents.length }} student(s) selected</span>
+          <span aria-live="polite" class="sr-only">{{ selectedStudents.length }} student(s) selected</span>
 
-          <button pButton label="Delete Selected" icon="pi pi-trash" class="p-button-danger" (click)="deleteSelected()">
+          <button 
+            pButton 
+            label="Delete Selected" 
+            icon="pi pi-trash" 
+            class="p-button-danger" 
+            (click)="deleteSelected()">
           </button>
         </div>
       </div>
@@ -55,11 +102,14 @@
     <ng-template pTemplate="header">
       <tr>
         <th style="width: 3rem"><p-tableHeaderCheckbox></p-tableHeaderCheckbox></th>
-        <th *ngFor="let col of columns()" [pSortableColumn]="col.field" [style.width]="col.width"
-          [style.min-width]="col.width">
-          {{ col.header }}
-          <p-sortIcon [field]="col.field"></p-sortIcon>
-        </th>
+        @for (col of columns(); track col.field) {
+          <th [pSortableColumn]="col.field" 
+            [style.width]="col.width"
+            [style.min-width]="col.width">
+            {{ col.header }}
+            <p-sortIcon [field]="col.field"></p-sortIcon>
+          </th>
+        }
         <th style="min-width: 150px">Actions</th>
       </tr>
     </ng-template>
@@ -67,17 +117,32 @@
     <ng-template pTemplate="body" let-student>
       <tr class="student-row">
         <td><p-tableCheckbox [value]="student"></p-tableCheckbox></td>
-        <td *ngFor="let col of columns()">
+        <td *ngFor="let col of columns(); trackBy: trackByField">
           <ng-container [ngSwitch]="col.type">
-            <p-tag *ngSwitchCase="'tag'" [value]="student[col.field]"
-              [severity]="getSeverity(student[col.field])"></p-tag>
+            <p-tag *ngSwitchCase="'tag'" 
+              [value]="student[col.field]" 
+              [severity]="getSeverity(student[col.field])">
+            </p-tag>
             <span *ngSwitchDefault>{{ student[col.field] }}</span>
           </ng-container>
         </td>
+
         <td class="actions-column">
-          <button pButton icon="pi pi-pencil" class="p-button-text p-button-success" (click)="editStudent(student)">
+          <button 
+            pButton 
+            icon="pi pi-pencil" 
+            class="p-button-text p-button-success" 
+            (click)="editStudent(student)"
+            aria-label="Edit student"
+            [attr.aria-label]="'Edit ' + student.firstName + ' ' + student.lastName">
           </button>
-          <button pButton icon="pi pi-trash" class="p-button-text p-button-danger" (click)="deleteStudent(student.id)">
+          <button 
+            pButton 
+            icon="pi pi-trash" 
+            class="p-button-text p-button-danger" 
+            (click)="deleteStudent(student.id)"
+            [attr.aria-label]="'Delete ' + student.firstName + ' ' + student.lastName +
+               ', Roll number ' + student.rollNumber">
           </button>
         </td>
       </tr>

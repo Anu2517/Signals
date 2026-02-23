@@ -7,6 +7,7 @@ import { ButtonModule } from 'primeng/button';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { AuthService } from '../../../services/auth-service';
+import { FormBase } from '../../../shared/form-base';
 
 @Component({
   selector: 'app-signin',
@@ -16,18 +17,16 @@ import { AuthService } from '../../../services/auth-service';
   styleUrls: ['./signin.css'],
   providers: [MessageService],
 })
-export class Signin implements OnInit {
-  loginForm!: FormGroup;
+export class Signin extends FormBase implements OnInit {
+  form!: FormGroup;
 
-  constructor(
-    private fb: FormBuilder,
-    private auth: AuthService,
-    private router: Router,
-    private messageService: MessageService
-  ) { }
+  private fb = inject(FormBuilder);
+  private auth = inject(AuthService);
+  private router = inject(Router);
+  private messageService = inject(MessageService);
 
   ngOnInit(): void {
-    this.loginForm = this.fb.group({
+    this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
@@ -35,25 +34,18 @@ export class Signin implements OnInit {
     const emailFromSignup = history.state?.email;
 
     if (emailFromSignup) {
-      this.loginForm.patchValue({
+      this.form.patchValue({
         email: emailFromSignup
       });
     }
   }
 
-  get f() {
-    return this.loginForm.controls;
-  }
-
   login(): void {
-    if (this.loginForm.invalid) {
-      this.loginForm.markAllAsTouched();
-      return;
-    }
+    if (!this.validateForm()) return;
 
-    const { email, password } = this.loginForm.value;
+    const { email, password } = this.form.value;
 
-    this.auth.login(this.loginForm.value.email, this.loginForm.value.password).subscribe(success => {
+    this.auth.login(email, password).subscribe(success => {
       if (success) {
         this.router.navigate(['/dashboard']);
       } else {
